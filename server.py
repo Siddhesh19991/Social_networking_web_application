@@ -27,43 +27,43 @@ def sign_up():
     password = json_dic.get("password")
 
     if fname == None or lname == None or gender == None or city == None or country == None or email == None or password == None:
-        return jsonify({"success": False, "msg": "no empty fields allowed"}), 200
+        return jsonify({"success": False, "msg": "no empty fields allowed"}), 400
 
     try:
         validate_email(email, check_deliverability=False)
 
     except:
-        return jsonify({"success": False, "msg": "incorrect structure of the email"}), 200
+        return jsonify({"success": False, "msg": "incorrect structure of the email"}), 400
 
     if len(password) < 8:
-        return jsonify({"success": False, "msg": "password must be atleast 8 characters long"}), 200
+        return jsonify({"success": False, "msg": "password must be atleast 8 characters long"}), 400
 
     if (database_helper.find_user(email) == True):
-        return jsonify({"success": False, "msg": "User already exists"}), 200
+        return jsonify({"success": False, "msg": "User already exists"}), 400
 
     if password == "":
-        return jsonify({"success": False, "msg": "password can not be empty"}), 200
+        return jsonify({"success": False, "msg": "password can not be empty"}), 400
     if fname == "":
-        return jsonify({"success": False, "msg": "First Name can not be empty"}), 200
+        return jsonify({"success": False, "msg": "First Name can not be empty"}), 400
     if lname == "":
-        return jsonify({"success": False, "msg": "Family Name can not be empty"}), 200
+        return jsonify({"success": False, "msg": "Family Name can not be empty"}), 400
     if gender == "":
-        return jsonify({"success": False, "msg": "Gender field can not be empty"}), 200
+        return jsonify({"success": False, "msg": "Gender field can not be empty"}), 400
     if city == "":
-        return jsonify({"success": False, "msg": "City field can not be empty"}), 200
+        return jsonify({"success": False, "msg": "City field can not be empty"}), 400
     if country == "":
-        return jsonify({"success": False, "msg": "Country field can not be empty"}), 200
+        return jsonify({"success": False, "msg": "Country field can not be empty"}), 400
     if email == "":
-        return jsonify({"success": False, "msg": "e-mail field can not be empty"}), 200
+        return jsonify({"success": False, "msg": "e-mail field can not be empty"}), 400
 
     resp = database_helper.create_user(
         fname, lname, gender, city, country, email, password)
 
     if resp == False:
-        return jsonify({"success": False, "msg": "issue with creating the user"}), 200
+        return jsonify({"success": False, "msg": "issue with creating the user"}), 500
     else:
         database_helper.add_user_token_table(email)
-        return jsonify({"success": True, "msg": "user created"}), 200
+        return jsonify({"success": True, "msg": "user created"}), 201
 
 
 @app.route("/sign_in", methods=["POST"])
@@ -80,10 +80,10 @@ def sign_in():
         del active_users[email]
 
     if email == None or password == None:
-        return jsonify({"success": False, "msg": "e-mail and password fields are required"}), 200
+        return jsonify({"success": False, "msg": "e-mail and password fields are required"}), 400
 
     if (database_helper.find_user(email) == False):
-        return jsonify({"success": False, "msg": "user does not exist"}), 200
+        return jsonify({"success": False, "msg": "user does not exist"}), 400
 
     password_check = database_helper.get_password_with_email(email)
 
@@ -91,7 +91,7 @@ def sign_in():
         database_helper.token_store(email, token)
         return jsonify({"success": True, "data": token, "msg": "logged in successucfully"}), 200
     else:
-        return jsonify({"success": False, "msg": "incorrect password"}), 200
+        return jsonify({"success": False, "msg": "incorrect password"}), 400
 
 
 @app.route("/sign_out", methods=["DELETE"])
@@ -116,7 +116,7 @@ def change_password():
     user_data = database_helper.get_user_data_with_token(token)
 
     if user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "token invalid"}), 401
 
     request_json = request.get_json()
     old_password_from_user = request_json.get(
@@ -128,13 +128,13 @@ def change_password():
     password_from_database = database_helper.get_password_with_email(email)
 
     if (old_password_from_user == None or new_password_from_user == None):
-        return jsonify({"success": False, "msg": "no empty fields allowed"}), 200
+        return jsonify({"success": False, "msg": "no empty fields allowed"}), 400
     if (old_password_from_user != password_from_database):
-        return jsonify({"success": False, "msg": "old password entered is not correct!"}), 200
+        return jsonify({"success": False, "msg": "old password entered is not correct!"}), 400
     if (old_password_from_user == new_password_from_user):
-        return jsonify({"success": False, "msg": "old and new password cannot be the same!"}), 200
+        return jsonify({"success": False, "msg": "old and new password cannot be the same!"}), 400
     if len(new_password_from_user) < 8:
-        return jsonify({"success": False, "msg": "new password must be at least 8 characters!"}), 200
+        return jsonify({"success": False, "msg": "new password must be at least 8 characters!"}), 400
 
     database_helper.update_password(new_password_from_user, email)
     return jsonify({"success": True, "msg": "password updated"}), 200
@@ -147,7 +147,7 @@ def get_user_data_by_token():
     user_data = database_helper.get_user_data_with_token(token)
 
     if user_data == None:
-        return jsonify({"success": False, "msg": "token invalid!!"}), 200
+        return jsonify({"success": False, "msg": "token invalid!!"}), 400
 
     received_data = {  # create a dictionary with the user data(json)
         "firstname": user_data[0],

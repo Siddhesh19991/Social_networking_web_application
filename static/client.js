@@ -83,9 +83,45 @@ function check() {
   xmlr.open("POST", "/sign_up", true);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let jsonResponse = JSON.parse(xmlr.responseText);
-      document.getElementById("signup_message").innerHTML = jsonResponse.msg;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 201) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("signup_message").innerHTML =
+          "The user has been created";
+      } else if (xmlr.status == 400) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "incorrect structure of the email") {
+          document.getElementById("signup_message").innerHTML =
+            "The email structure is not right";
+        } else if (jsonResponse.msg == "User already exists") {
+          document.getElementById("signup_message").innerHTML =
+            "This email Id already exists";
+        } else if (jsonResponse.msg == "no empty fields allowed") {
+          document.getElementById("signup_message").innerHTML =
+            "None of the input fields can be empty";
+        } else if (
+          jsonResponse.msg == "password must be atleast 8 characters long"
+        ) {
+          document.getElementById("signup_message").innerHTML =
+            "The password must be 8 characters or more long";
+        }
+      } else if (xmlr.status == 409) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("signup_message").innerHTML =
+          "Error: Conflict with the current state of the server";
+      } else if (xmlr.status == 405) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.gtElementById("signup_message").innerHTML =
+          "Error: The request method is not supported by the target resource ";
+      } else if (xmlr.status == 500) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "issue with creating the user") {
+          document.getElementById("signup_message").innerHTML =
+            "There was an issue with uploading the information to the database";
+        } else {
+          document.getElementById("signup_message").innerHTML = "server error";
+        }
+      }
     }
   };
 
@@ -145,57 +181,86 @@ function check_login(event) {
   xmlr.setRequestHeader("Content-Type", "application/json;charset = utf-8");
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let jsonResponse = JSON.parse(xmlr.responseText);
-      document.getElementById("login_message").innerHTML = jsonResponse.msg;
-      console.log(jsonResponse.success);
-      if (jsonResponse.success == false) {
-        return false; //stay on login screen
-      } else {
-        localStorage.setItem("token", jsonResponse.data); // login token saved
-        localStorage.setItem("email", email_entered);
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("login_message").innerHTML =
+          "You have logged in successucfully";
+        console.log(jsonResponse.success);
+        if (jsonResponse.success == false) {
+          return false; //stay on login screen
+        } else {
+          localStorage.setItem("token", jsonResponse.data); // login token saved
+          localStorage.setItem("email", email_entered);
 
-        //if success true open next page
-        var profileViewContent =
-          document.getElementById("profileview").textContent;
-        displayView(profileViewContent);
-      }
+          //if success true open next page
+          var profileViewContent =
+            document.getElementById("profileview").textContent;
+          displayView(profileViewContent);
+        }
 
-      const websocket = new WebSocket("ws://" + location.host + "/echo");
+        const websocket = new WebSocket("ws://" + location.host + "/echo");
 
-      console.log(websocket);
+        console.log(websocket);
 
-      websocket.onopen = function (event) {
-        console.log("WebSocket connection opened.");
-        websocket.send(jsonResponse.data);
+        websocket.onopen = function (event) {
+          console.log("WebSocket connection opened.");
+          websocket.send(jsonResponse.data);
 
-        websocket.onmessage = function (message) {
-          console.log(message.data);
-          if (message.data == "sign_out") {
-            setTimeout(function () {
-              localStorage.removeItem("token");
-              localStorage.removeItem("activeProfileViewTab");
+          websocket.onmessage = function (message) {
+            console.log(message.data);
+            if (message.data == "sign_out") {
+              setTimeout(function () {
+                localStorage.removeItem("token");
+                localStorage.removeItem("activeProfileViewTab");
 
-              websocket.close();
-              //make the page wait for 2 seconds before redirecting to welcome page
-              var welcomeViewScript = document.getElementById("welcomeview");
-              var contentView = welcomeViewScript.textContent;
-              displayView(contentView);
-            }, 2000);
-          }
+                websocket.close();
+                //make the page wait for 2 seconds before redirecting to welcome page
+                var welcomeViewScript = document.getElementById("welcomeview");
+                var contentView = welcomeViewScript.textContent;
+                displayView(contentView);
+                document.getElementById("login_message").innerHTML =
+                  "You have been sign-out due to multiple sign-ins";
+              }, 2000);
+            }
+          };
         };
-      };
 
-      websocket.onerror = function (event) {
-        console.error("WebSocket error:", event);
-        console.error("WebSocket readyState:", websocket.readyState);
-        console.error("WebSocket URL:", websocket.url);
-      };
+        websocket.onerror = function (event) {
+          console.error("WebSocket error:", event);
+          console.error("WebSocket readyState:", websocket.readyState);
+          console.error("WebSocket URL:", websocket.url);
+        };
 
-      //login sucess-opening next page data retrieval and post-tezt retrieval
+        //login sucess-opening next page data retrieval and post-tezt retrieval
 
-      data_retrival();
-      text_display();
+        data_retrival();
+        text_display();
+      } else if (xmlr.status == 400) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+
+        if (jsonResponse.msg == "e-mail and password fields are required") {
+          document.getElementById("login_message").innerHTML =
+            "No empty fields are allowed to sign-in";
+        } else if (jsonResponse.msg == "user does not exist") {
+          document.getElementById("login_message").innerHTML =
+            "User does not exist in the database";
+        } else if (jsonResponse.msg == "incorrect password") {
+          document.getElementById("login_message").innerHTML =
+            "You have entered the wrong password";
+        }
+      } else if (xmlr.status == 401) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("login_message").innerHTML =
+          "Unauthorized error";
+      } else if (xmlr.status == 405) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.gtElementById("login_message").innerHTML =
+          "Error: The request method is not supported by the target resource ";
+      } else if (xmlr.status == 500) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("login_message").innerHTML = "server error";
+      }
     }
   };
 
@@ -262,20 +327,39 @@ function data_retrival() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let jsonResponse = JSON.parse(xmlr.responseText);
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
 
-      document.getElementById("user-first-name").textContent =
-        jsonResponse.data.firstname;
-      document.getElementById("user-family-name").textContent =
-        jsonResponse.data.familyname;
-      document.getElementById("user-gender").textContent =
-        jsonResponse.data.gender;
-      document.getElementById("user-city").textContent = jsonResponse.data.city;
-      document.getElementById("user-country").textContent =
-        jsonResponse.data.country;
-      document.getElementById("user-mail").textContent =
-        jsonResponse.data.email;
+        document.getElementById("user-first-name").textContent =
+          jsonResponse.data.firstname;
+        document.getElementById("user-family-name").textContent =
+          jsonResponse.data.familyname;
+        document.getElementById("user-gender").textContent =
+          jsonResponse.data.gender;
+        document.getElementById("user-city").textContent =
+          jsonResponse.data.city;
+        document.getElementById("user-country").textContent =
+          jsonResponse.data.country;
+        document.getElementById("user-mail").textContent =
+          jsonResponse.data.email;
+      } else if (xmlr.status == 401) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "token invalid") {
+          document.getElementById("profile-error").innerHTML =
+            "Invalid token error";
+        } else {
+          document.getElementById("profile-error").innerHTML =
+            "Unauthorized error";
+        }
+      } else if (xmlr.status == 405) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.gtElementById("profile-error").innerHTML =
+          "Error: The request method is not supported by the target resource ";
+      } else if (xmlr.status == 500) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("profile-error").innerHTML = "server error";
+      }
     }
   };
 
@@ -371,10 +455,48 @@ function passwordChange() {
   }
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let jsonResponse = JSON.parse(xmlr.responseText);
-      document.getElementById("password_change_message").innerHTML =
-        jsonResponse.msg;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("password_change_message").innerHTML =
+          "Password has been successfully updated";
+      } else if (xmlr.status == 400) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "no empty fields allowed") {
+          document.getElementById("password_change_message").innerHTML =
+            "None of the input fields can be empty";
+        } else if (jsonResponse.msg == "old password entered is not correct!") {
+          document.getElementById("password_change_message").innerHTML =
+            "The old password entered is incorrect";
+        } else if (
+          jsonResponse.msg == "old and new password cannot be the same!"
+        ) {
+          document.getElementById("password_change_message").innerHTML =
+            "The old password and new password cannot be the same";
+        } else if (
+          jsonResponse.msg == "new password must be at least 8 characters!"
+        ) {
+          document.getElementById("password_change_message").innerHTML =
+            "The new password must have atleast 8 characters as well";
+        }
+      } else if (xmlr.status == 401) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "token invalid") {
+          document.getElementById("password_change_message").innerHTML =
+            "Invalid token error";
+        } else {
+          document.getElementById("password_change_message").innerHTML =
+            "Unauthorized error";
+        }
+      } else if (xmlr.status == 405) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.gtElementById("password_change_message").innerHTML =
+          "Error: The request method is not supported by the target resource ";
+      } else if (xmlr.status == 500) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("password_change_message").innerHTML =
+          "server error";
+      }
     }
   };
 
@@ -401,17 +523,40 @@ function signout() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let jsonResponse = JSON.parse(xmlr.responseText);
-      document.getElementById("signout_message").innerHTML = jsonResponse.msg;
-      localStorage.removeItem("token");
-      localStorage.removeItem("activeProfileViewTab");
-      setTimeout(function () {
-        //make the page wait for 2 seconds before redirecting to welcome page
-        var welcomeViewScript = document.getElementById("welcomeview");
-        var contentView = welcomeViewScript.textContent;
-        displayView(contentView);
-      }, 2000);
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("signout_message").innerHTML =
+          "sign out successful";
+        localStorage.removeItem("token");
+        localStorage.removeItem("activeProfileViewTab");
+        setTimeout(function () {
+          //make the page wait for 2 seconds before redirecting to welcome page
+          var welcomeViewScript = document.getElementById("welcomeview");
+          var contentView = welcomeViewScript.textContent;
+          displayView(contentView);
+        }, 2000);
+      } else if (xmlr.status == 400) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("signout_message").innerHTML =
+          "Bad request error";
+      } else if (xmlr.status == 401) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        if (jsonResponse.msg == "token invalid") {
+          document.getElementById("signout_message").innerHTML =
+            "Invalid token error";
+        } else {
+          document.getElementById("signout_message").innerHTML =
+            "Unauthorized error";
+        }
+      } else if (xmlr.status == 405) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.gtElementById("signout_message").innerHTML =
+          "Error: The request method is not supported by the target resource ";
+      } else if (xmlr.status == 500) {
+        let jsonResponse = JSON.parse(xmlr.responseText);
+        document.getElementById("signout_message").innerHTML = "server error";
+      }
     }
   };
   xmlr.send();
