@@ -273,14 +273,13 @@ def echo(sock):
         token = sock.receive()
         print(token)
         email = database_helper.get_email(token)
-
         if email in active_users:
             print("already logged in")
-            # del active_users[email]
+            del active_users[email]
 
-            # sock.send("sign_out")
+            sock.send("sign_out")
 
-            # active_users[email] = sock
+            active_users[email] = sock
             # print(sock)
 
         else:
