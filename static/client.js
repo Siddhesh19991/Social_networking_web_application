@@ -418,7 +418,6 @@ function text_save() {
         })
       );
     }
-    const options = {};
 
     navigator.geolocation.getCurrentPosition(success, error);
   } else {
