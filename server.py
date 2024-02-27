@@ -204,6 +204,15 @@ def post_msg():
         "email")  # get email from the request
     user_entered_message = request_json.get(
         "message")  # get message from the request
+    latitude = request_json.get("latitude")
+    longitude = request_json.get("longitude")
+
+    if latitude == None or latitude == "":
+        latitude = 0
+    if longitude == None or longitude == "":
+        longitude = 0
+
+    print(latitude)
 
     if user_entered_message == None or user_entered_message == "":
         return jsonify({"success": False, "msg": "Messsage cannot be empty"}), 200
@@ -216,6 +225,8 @@ def post_msg():
         sender_email=token_user_data[5],
         receiver_email=user_entered_email,
         message=user_entered_message,
+        latitude=latitude,
+        longitude=longitude
     )
 
     return jsonify({"success": True, "msg": "message posted!"}), 200
@@ -234,13 +245,16 @@ def get_msg_token():
     # get all messages from the database with email
     all_msg = database_helper.get_messages(email)
 
+    print(all_msg)
     formatted_messages = []  # formatting and store messages in formatted_messages list
     for message in all_msg:
         formatted_messages.append(
             {
                 "sender": message[0],
                 "receiver": message[1],
-                "message": message[2]
+                "message": message[2],
+                "latitude": message[3],
+                "longitude": message[4]
             })
 
     return jsonify({"success": True, "msg": "data retrived!", "all_messages": formatted_messages}), 200

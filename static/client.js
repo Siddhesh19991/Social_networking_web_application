@@ -385,14 +385,42 @@ function text_save() {
 
   textMessage = document.getElementById("user-text-to-be-posted").value;
 
+  let lat = 0;
+  let long = 0;
+
   if (textMessage != "") {
     document.getElementById("user-text-to-be-posted").value = "";
-    xmlr.send(
-      JSON.stringify({
-        email: localStorage.getItem("email"),
-        message: textMessage,
-      })
-    );
+
+    function success(pos) {
+      console.log(pos);
+      lat = pos.coords.latitude;
+      long = pos.coords.longitude;
+
+      xmlr.send(
+        JSON.stringify({
+          email: localStorage.getItem("email"),
+          message: textMessage,
+          latitude: lat,
+          longitude: long,
+        })
+      );
+    }
+
+    function error(err) {
+      console.error("Error occurred while getting geolocation:", err);
+
+      xmlr.send(
+        JSON.stringify({
+          email: localStorage.getItem("email"),
+          message: textMessage,
+          latitude: 0,
+          longitude: 0,
+        })
+      );
+    }
+    const options = {};
+
+    navigator.geolocation.getCurrentPosition(success, error);
   } else {
     document.getElementById("message-post-response").innerHTML =
       "Cannot be empty";
@@ -406,19 +434,30 @@ function text_display() {
   xmlr.open("GET", "/get_user_messages_by_token", true);
   xmlr.setRequestHeader("Authorization", token);
 
-  xmlr.onreadystatechange = function () {
+  xmlr.onreadystatechange = async function () {
     if (xmlr.status == 200 && xmlr.readyState == 4) {
       let responseData = JSON.parse(xmlr.responseText);
       allMessages = responseData.all_messages;
 
+      console.log(allMessages.length);
+
       for (let rep = 0; rep < allMessages.length; rep++) {
         msgIndex = allMessages.length - rep;
+        la = allMessages[msgIndex - 1].latitude;
+        lo = allMessages[msgIndex - 1].longitude;
+        const response = await fetch(
+          `https://geocode.xyz/${la},${lo}?json=1&auth=761998892988506478345x127323`
+        );
+        const data = await response.json();
+        const address = data.region;
+
         document.getElementById("text-wall").innerHTML += `
-        <div id="message-${msgIndex}"> ${msgIndex}) - ${
+          <div id="message-${msgIndex}"> ${msgIndex}) - ${
           allMessages[msgIndex - 1].message
         } <br>
-        <i>posted by: ${allMessages[msgIndex - 1].sender}</i>
-        </div>`;
+          <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
+          <span>Address: ${address}</span>
+          </div>`;
       }
     }
   };
