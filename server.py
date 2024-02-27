@@ -276,12 +276,12 @@ def echo(sock):
 
         if email in active_users:
             print("already logged in")
-            del active_users[email]
+            # del active_users[email]
 
             # sock.send("sign_out")
 
-            active_users[email] = sock
-            print(sock)
+            # active_users[email] = sock
+            # print(sock)
 
         else:
             active_users[email] = sock
