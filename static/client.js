@@ -25,7 +25,7 @@ window.onload = function () {
   var profileView = document.getElementById("profileview").textContent;
   displayView(profileView);
 
-  const websocket = new WebSocket("ws://" + location.host + "/echo");
+  const websocket = new WebSocket("wss://" + location.host + "/echo");
   console.log(websocket);
 
   websocket.onopen = function (event) {
@@ -199,7 +199,7 @@ function check_login(event) {
           displayView(profileViewContent);
         }
 
-        const websocket = new WebSocket("ws://" + location.host + "/echo");
+        const websocket = new WebSocket("wss://" + location.host + "/echo");
 
         console.log(websocket);
 
