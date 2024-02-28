@@ -277,7 +277,9 @@ def get_msg_email(email):
             {
                 "sender": message[0],
                 "receiver": message[1],
-                "message": message[2]
+                "message": message[2],
+                "latitude": message[3],
+                "longitude": message[4]
             }
         )
 

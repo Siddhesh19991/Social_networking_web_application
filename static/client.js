@@ -385,16 +385,13 @@ function text_save() {
 
   textMessage = document.getElementById("user-text-to-be-posted").value;
 
-  let lat = 0;
-  let long = 0;
-
   if (textMessage != "") {
     document.getElementById("user-text-to-be-posted").value = "";
 
     function success(pos) {
-      console.log(pos);
-      lat = pos.coords.latitude;
-      long = pos.coords.longitude;
+      console.log("ok");
+      const lat = pos.coords.latitude;
+      const long = pos.coords.longitude;
 
       xmlr.send(
         JSON.stringify({
@@ -419,7 +416,9 @@ function text_save() {
       );
     }
 
-    navigator.geolocation.getCurrentPosition(success, error);
+    const options = { async: false };
+
+    navigator.geolocation.getCurrentPosition(success, error, options);
   } else {
     document.getElementById("message-post-response").innerHTML =
       "Cannot be empty";
@@ -445,10 +444,11 @@ function text_display() {
         la = allMessages[msgIndex - 1].latitude;
         lo = allMessages[msgIndex - 1].longitude;
         const response = await fetch(
-          `https://geocode.xyz/${la},${lo}?json=1&auth=761998892988506478345x127323`
+          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
         );
         const data = await response.json();
         const address = data.region;
+        console.log(data);
 
         document.getElementById("text-wall").innerHTML += `
           <div id="message-${msgIndex}"> ${msgIndex}) - ${
@@ -646,19 +646,28 @@ function userretrive() {
         xmlr2.open("GET", `get_user_messages_by_email/${userEmail}`, true);
         xmlr2.setRequestHeader("Authorization", token);
 
-        xmlr2.onreadystatechange = function () {
+        xmlr2.onreadystatechange = async function () {
           if (xmlr2.status == 200 && xmlr2.readyState == 4) {
             let userMessagesData = JSON.parse(xmlr2.responseText);
             let allMessages = userMessagesData.all_messages;
 
             for (let rep = 0; rep < allMessages.length; rep++) {
               msgIndex = allMessages.length - rep;
+              la = allMessages[msgIndex - 1].latitude;
+              lo = allMessages[msgIndex - 1].longitude;
+              const response = await fetch(
+                `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
+              );
+              const data = await response.json();
+              const address = data.region;
+
               document.getElementById(
                 "other-user-text-wall"
               ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
                 allMessages[msgIndex - 1].message
               } <br>
-              <i>posted by: ${allMessages[msgIndex - 1].sender}</i>
+              <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
+              <span>Address: ${address}</span>
               </div>`;
             }
           }
@@ -697,12 +706,37 @@ function other_user_test_save() {
       document.getElementById("server-response").innerHTML = responseData.msg;
     }
   };
-  xmlr.send(
-    JSON.stringify({
-      email: otherUserEmail,
-      message: textMessageToBePosted,
-    })
-  );
+  function success(pos) {
+    console.log("ok");
+    const lat = pos.coords.latitude;
+    const long = pos.coords.longitude;
+
+    xmlr.send(
+      JSON.stringify({
+        email: otherUserEmail,
+        message: textMessageToBePosted,
+        latitude: lat,
+        longitude: long,
+      })
+    );
+  }
+
+  function error(err) {
+    console.error("Error occurred while getting geolocation:", err);
+
+    xmlr.send(
+      JSON.stringify({
+        email: otherUserEmail,
+        message: textMessageToBePosted,
+        latitude: 0,
+        longitude: 0,
+      })
+    );
+  }
+
+  const options = { async: false };
+
+  navigator.geolocation.getCurrentPosition(success, error, options);
   return false;
 }
 
@@ -718,20 +752,29 @@ function other_user_refresh() {
   xmlr.open("GET", `get_user_messages_by_email/${userEmail}`, true);
   xmlr.setRequestHeader("Authorization", token);
 
-  xmlr.onreadystatechange = function () {
+  xmlr.onreadystatechange = async function () {
     if (xmlr.status == 200 && xmlr.readyState == 4) {
       let userMessagesData = JSON.parse(xmlr.responseText);
-      allMessages = userMessagesData.all_messages;
+      let allMessages = userMessagesData.all_messages;
 
       for (let rep = 0; rep < allMessages.length; rep++) {
         msgIndex = allMessages.length - rep;
+        la = allMessages[msgIndex - 1].latitude;
+        lo = allMessages[msgIndex - 1].longitude;
+        const response = await fetch(
+          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
+        );
+        const data = await response.json();
+        const address = data.region;
+
         document.getElementById(
           "other-user-text-wall"
         ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
           allMessages[msgIndex - 1].message
         } <br>
-        <i>posted by: ${allMessages[msgIndex - 1].sender}</i>
-        </div>`;
+              <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
+              <span>Address: ${address}</span>
+              </div>`;
       }
     }
   };
