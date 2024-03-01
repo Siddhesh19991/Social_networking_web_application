@@ -19,6 +19,8 @@ create table messages(
       sender varchar(100),
       receiver varchar(100),
       message_data text,
+      latitude varchar(100),
+      longitude varchar(100),
       foreign key(sender) references user(email),
       foreign key(receiver) references user(email)
 )
