@@ -293,7 +293,6 @@ function openHome() {
 }
 
 function openBrowse() {
-  text_display();
 
   document.getElementById("home-content").style.display = "none";
   document.getElementById("browse-content").style.display = "block";
@@ -376,11 +375,24 @@ function text_save() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if (xmlr.readyState == 4) {
       let jsonResponse = JSON.parse(xmlr.responseText);
+      if(xmlr.status == 200){
       document.getElementById("message-post-response").innerHTML =
         jsonResponse.msg;
+    }else if (xmlr.status == 401) {
+      // Unauthorized
+      document.getElementById("message-post-response").innerHTML = "Unauthorized access. Please check your token.";
+    } else if (xmlr.status == 400) {
+      // Bad Request
+      document.getElementById("message-post-response").innerHTML = "Fields can not be empty. Please check the message.";
+    } else if (xmlr.status == 404) {
+      // Not Found
+      document.getElementById("message-post-response").innerHTML = "User not found. Please check the email address.";
+    } else if (xmlr.status == 500){
+      document.getElementById("message-post-response").innerHTML = "An error occurred. Please try again.";
     }
+   }
   };
 
   textMessage = document.getElementById("user-text-to-be-posted").value;
@@ -421,7 +433,7 @@ function text_save() {
     navigator.geolocation.getCurrentPosition(success, error, options);
   } else {
     document.getElementById("message-post-response").innerHTML =
-      "Cannot be empty";
+      "Field can not be Empty";
   }
 }
 
@@ -433,7 +445,8 @@ function text_display() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = async function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if (xmlr.readyState == 4) {
+      if(xmlr.status == 200){
       let responseData = JSON.parse(xmlr.responseText);
       allMessages = responseData.all_messages;
 
@@ -458,12 +471,21 @@ function text_display() {
           <span>Address: ${address}</span>
           </div>`;
       }
+    }}
+    else if(xmlr.status == 401){
+      document.getElementById("text-wall").innerHTML = "Session expired. Please log in again.";
+    }
+    else if(xmlr.status == 404){
+      document.getElementById("text-wall").innerHTML = "No messages to display. Post a message to start.";
+    }
+    else if(xmlr.status == 500){
+      document.getElementById("text-wall").innerHTML = "An unexpected error occurred.Please try again.";
     }
   };
 
   //console.log(array.data[0].content); there is error here in chrome console!
-
   xmlr.send();
+  
 }
 
 function refresh() {
@@ -612,7 +634,8 @@ function userretrive() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if (xmlr.readyState == 4) {
+      if(xmlr.status == 200){ 
       let responseData = JSON.parse(xmlr.responseText);
 
       if (responseData.success == false) {
@@ -673,7 +696,17 @@ function userretrive() {
           }
         };
         xmlr2.send();
+      }}
+      else if (xmlr.status == 401){
+        document.getElementById("retrive_message").innerHTML = "Session expired. Please log in again.";
       }
+      else if(xmlr.status == 404){
+        document.getElementById("retrive_message").innerHTML = "User with this email not found in the system";
+      }
+      else if(xmlr.status == 500){
+        document.getElementById("retrive_message").innerHTML = "An unexpected error occurred.Please try again.";
+      }
+  
     }
   };
   xmlr.send();
@@ -688,10 +721,10 @@ function other_user_test_save() {
   ).value;
   otherUserEmail = document.getElementById("user-email").value;
 
-  if (textMessageToBePosted == "") {
-    document.getElementById("server-response").innerHTML = "Cannot be empty";
-    return false;
-  }
+  //if (textMessageToBePosted == "") {
+  //  document.getElementById("server-response").innerHTML = "Cannot be empty";
+  //  return false;
+  //}
   document.getElementById("message-text-to-be-posted").value = "";
 
   let token = localStorage.getItem("token");
@@ -701,11 +734,25 @@ function other_user_test_save() {
   xmlr.setRequestHeader("Content-Type", "application/json;charset = utf-8");
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if ( xmlr.readyState == 4) {
+      if(xmlr.status == 200){
       let responseData = JSON.parse(xmlr.responseText);
       document.getElementById("server-response").innerHTML = responseData.msg;
     }
-  };
+    else if (xmlr.status == 401) {
+      let responseData = JSON.parse(xmlr.responseText);
+      document.getElementById("server-response").innerHTML = "Session expired. Please log in again.";
+    } else if (xmlr.status == 400) {
+      let responseData = JSON.parse(xmlr.responseText);
+      document.getElementById("server-response").innerHTML = "Fields can not be empty. " + responseData.msg;
+    } else if (xmlr.status == 404) {
+      let responseData = JSON.parse(xmlr.responseText);
+      document.getElementById("server-response").innerHTML = "User with entered email does not exist. " ;
+    } else if (xmlr.status == 500) {
+      document.getElementById("server-response").innerHTML = "An unexpected error occurred.Please try again.";
+    }
+  }
+};
   function success(pos) {
     console.log("ok");
     const lat = pos.coords.latitude;
@@ -753,7 +800,8 @@ function other_user_refresh() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = async function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if (xmlr.readyState == 4) {
+      if(xmlr.status == 200){ 
       let userMessagesData = JSON.parse(xmlr.responseText);
       let allMessages = userMessagesData.all_messages;
 
@@ -776,7 +824,17 @@ function other_user_refresh() {
               <span>Address: ${address}</span>
               </div>`;
       }
+    }}
+    else if(xmlr.status == 401){
+      document.getElementById("other-user-text-wall").innerHTML = "Session expired. Please log in again.";
     }
+    else if(xmlr.status == 404){
+      document.getElementById("other-user-text-wall").innerHTML = "Entered email does not exist";
+    } 
+    else if(xmlr.status == 500){
+      document.getElementById("other-user-text-wall").innerHTML = "An unexpected error occurred.Please try again.";
+    }
+   
   };
   xmlr.send();
 }
