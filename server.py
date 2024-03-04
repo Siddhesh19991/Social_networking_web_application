@@ -171,13 +171,13 @@ def get_user_data_by_email(email):
     token_user_data = database_helper.get_user_data_with_token(token)
 
     if token_user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "token invalid"}), 401 #unauthorized
 
     # get the user data with the email
     email_user_data = database_helper.get_user_data_with_email(email)
 
     if email_user_data == None:
-        return jsonify({"success": False, "msg": "User with this email not found! Check the email."}), 200
+        return jsonify({"success": False, "msg": "User with this email not found! Check the email."}), 404
 
     received_data = {
         "firstname": email_user_data[0],
@@ -197,7 +197,7 @@ def post_msg():
     token_user_data = database_helper.get_user_data_with_token(token)
 
     if token_user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "Unauthorized:token invalid"}), 401
 
     request_json = request.get_json()  # user input (request data)
     user_entered_email = request_json.get(
@@ -215,11 +215,11 @@ def post_msg():
     print(latitude)
 
     if user_entered_message == None or user_entered_message == "":
-        return jsonify({"success": False, "msg": "Messsage cannot be empty"}), 200
+        return jsonify({"success": False, "msg": "Messsage cannot be empty"}), 400
     if user_entered_email == None or user_entered_email == "":
-        return jsonify({"success": False, "msg": "Email cannot be empty"}), 200
+        return jsonify({"success": False, "msg": "Email cannot be empty"}), 400
     if database_helper.find_user(user_entered_email) == False:
-        return jsonify({"success": False, "msg": "user with entered email does not exist"}), 200
+        return jsonify({"success": False, "msg": "user not found"}), 404
 
     database_helper.append_message(
         sender_email=token_user_data[5],
@@ -229,7 +229,7 @@ def post_msg():
         longitude=longitude
     )
 
-    return jsonify({"success": True, "msg": "message posted!"}), 200
+    return jsonify({"success": True, "msg": "Message posted!"}), 200
 
 
 @app.route("/get_user_messages_by_token", methods=["GET"])
@@ -237,13 +237,16 @@ def get_msg_token():
     token = request.headers.get("Authorization")
 
     if database_helper.get_token(token) == False:
-        return jsonify({"success": False, "msg": "token does not exist"}), 200
+        return jsonify({"success": False, "msg": "token does not exist"}), 401
 
     # get email from the database with sending the token
     email = database_helper.get_email(token)
 
     # get all messages from the database with email
     all_msg = database_helper.get_messages(email)
+
+    if all_msg is None or len(all_msg) == 0:
+        return jsonify({"success": False, "msg": "No messages found"}), 404
 
     print(all_msg)
     formatted_messages = []  # formatting and store messages in formatted_messages list
@@ -265,10 +268,10 @@ def get_msg_email(email):
     token = request.headers.get("Authorization")
 
     if database_helper.get_token(token) == False:
-        return jsonify({"success": False, "msg": "token doesnt exist"}), 200
+        return jsonify({"success": False, "msg": "token doesnt exist"}), 401
 
     if database_helper.find_user(email) == False:
-        return jsonify({"success": False, "msg": "email doesnt exist"}), 200
+        return jsonify({"success": False, "msg": "email doesnt exist"}), 404
 
     all_msg = database_helper.get_messages(email)
     formatted_messages = []
