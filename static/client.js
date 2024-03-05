@@ -234,8 +234,7 @@ function check_login(event) {
 
         //login sucess-opening next page data retrieval and post-tezt retrieval
 
-        data_retrival();
-        text_display();
+       openHome();
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
 
