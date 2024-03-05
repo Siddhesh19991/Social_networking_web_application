@@ -1,230 +1,65 @@
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  background-color: #4666da;
+  background-color: #4666da; /* Blue SWiwawa */
 }
-
-
-.forms-container {
-  width: 100%; /* Allows the container to fill the available space */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center align items for better mobile view */
-  padding: 15px; /* Add some padding */
-}
-
-.login {
-
-}
-.signup {
-  width: 250px; /* Width as per the layout */
-  height: 290px; /* Height as per the layout */
-  background: #fff;
-  border: 5px solid #000; /* Border as per the layout */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.input-container {
-  display: flex; /* Use flexbox for inline layout */
-  justify-content: flex-start;
-  align-items: center;
-  font-size: 15px;
-}
-
-.input-container label {
-  width: 80px;
-  margin: 0;
-  margin-right: 5px;
-  margin-top: 10px;
-  text-align: left;
-}
-
-.submit-container {
-  text-align: right; /* button to the right */
-  margin-bottom: 10px;
-  margin-top: 3px;
-}
-
-.login-button {
-  padding: 2px 10px; /* padding inside button */
-  background-color: #1e3958;
-  color: white; /* text color */
-  border: none; /* button will not have border*/
-  border-radius: 4px; /* for rounded corner of the button */
-  cursor: pointer; /* cursor changing to focus on button */
-}
-
-.login-button:hover {
-  background-color: #0056b3;
-}
-
-.signup-button {
-  padding: 2px 10px;
-  background-color: #1e3958;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.signup-button:hover {
-  background-color: #0056b3;
-}
-.form-field {
-  width: 66%; /* Makes the field take up the full width of its container */
-  padding: 1px 3px; /* Adjust the padding to match your design */
-  font-size: 13px; /* Sets a font size */
-  border: 1px solid #ccc; /* Border styling, you can customize this */
-  border-radius: 4px; /* Optional: rounds the corners of the inputs */
-  box-sizing: border-box; /* Ensures padding doesn't affect overall width */
-  display: flex; /* Use flexbox for inline layout */
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.8em;
-}
-
-.profile-container {
-  display: flex;
-  flex-direction: row;
-}
-
-#home-content {
-  display: block;
-}
-
-#browse-content {
-  display: none;
-}
-
-#account-content {
-  display: none;
-}
-
-.nav-bar {
-  position: fixed; /* fix navigation bar to the top of the viewport */
-  top: 0; /* align navigation bar to the top */
-  width: 100%; /* give navigation bar ->full width of the screen to make it in the middle*/
-  background-color: #4666da;
-  display: flex;
-  justify-content: center; /* center the buttons*/
-  padding: 10px 0; /* Aadd padding inside the navigation bar*/
-}
-
-.nav-button {
-  margin: 0 10px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  text-transform: capitalize; /* start capital letter in navigation bar*/
-}
-
-.nav-button:hover {
-  /* underline tab names when cursor is on them*/
-  text-decoration: underline;
-}
-
-body {
-  /* leave gap between th ebody of the page and tab line*/
-  padding-top: 50px;
-}
-
-/* container for the info in our home tab */
-.home-info-container {
-  width: 340px;
-  background: #fff;
-  border: 5px solid #000;
-  display: flex;
-  flex-direction: column; /* Stack children vertically */
-  justify-content: flex-start;
-  align-items: flex-start; /* information to go start of the container */
-  text-align: left; /* position the text to the left */
-  padding: 10px;
-  margin-right: 10px;
-  margin-top: 20px;
-}
-/* container for the post button in our home tab */
-.post-container {
-  text-align: right;
-  margin-bottom: 10px;
-  margin-top: 5px;
-  width: 209px;
-}
-/* container for the refresh button in our home tab */
-.refresh-container {
-  text-align: right;
-  margin-bottom: 10px;
-  margin-top: 5px;
-  width: 209px;
-}
-/* container for the retriewe info button in our browse tab */
-.info-retrw-container {
-  display: flex;
-  align-items: center;
-}
-
-.email-browse-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.title {
-  font-size: 30px;
-}
-
-#signup_message,
-#msg_post,
-#msg_post-,
-#signout_message,
-#password_change_message {
-  color: maroon;
-  font-size: x-small;
-}
-
-.profile-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-end;
-  justify-content: center;
-}
-
-#msg {
-  font-size: 20px;
-  font-weight: 200;
-}
-#login_message {
-  font-size: x-small;
-  color: maroon;
-}
-
 
 .custom-gap {
-  margin-bottom: 1px; /* Custom gap between elements */
+  margin-bottom: 1px;
 }
 
 .small-font {
-  font-size: 0.75rem; /* Smaller font size */
+  font-size: 0.75rem;
 }
 
 .half-width {
-  width: 70%; /* Half width for inputs or buttons */
+  width: 70%;
+}
+
+
+.welcome-container label {
+  color: white;
+}
+
+.navbar-custom {
+  background-color: #494D59;
+}
+.navbar-nav .nav-link {
+  color: white;
+}
+.navbar-nav .nav-link.active {
+  text-decoration: underline;
+  color: #D9A045;
+}
+.navbar-collapse {
+  justify-content: center;
+}
+.custom-button{
+  background-color: #4594D9;
+}
+
+#home-tab p {
+  color: white;
+}
+#home-tab label {
+  color: white;
+}
+#home-tab h2 {
+  color: white;
+}
+#text-wall {
+  color: white;
+}
+
+#browse-tab p {
+  color: white;
+}
+
+#browse-tab label {
+  color: white;
+}
+#browse-tab h2 {
+  color: white;
+}
+
+#other-user-text-wall {
+  color: white;
 }

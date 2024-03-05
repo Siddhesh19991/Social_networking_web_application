@@ -19,25 +19,25 @@
             <body>
             
                 <div class="container welcome-container">
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-md-4  d-none d-md-block my-3 logo-slogan">
+                    <div class="row pt-5 justify-content-center">
+                        <div class="col-md-3  d-none d-md-block logo-slogan">
                             <img src="/static/wimage.png" alt="Logo" class="logo-image img-fluid">
                         </div>
-                        <div class="col-12 col-md-3 ">
+                        <div class="col-md-3">
                             <div class="login mb-0">
                                 <form onsubmit="return check_login(event)">
-                                    <div class="mb-0">    
+                                    <div class="mb-0 custom-gap">    
                                         <label for="login-email" class="form-label small-font custom-gap">Email</label>
-                                        <input type="email" class="form-control form-control-sm half-width" id="login-email" name="username" required placeholder="Enter your email">
+                                        <input type="email" class="form-control form-control-sm" id="login-email" name="username" required placeholder="Enter your email">
                                     </div>
 
                                     <div class="mb-1">    
                                         <label for="login-password" class="form-label small-font custom-gap">Password</label>
-                                        <input type="password" class="form-control form-control-sm half-width" id="login-password" name="password" required placeholder="Enter your password">
+                                        <input type="password" class="form-control form-control-sm" id="login-password" name="password" required placeholder="Enter your password">
                                     </div>
                                     
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-light w-50 small-font">Login</button>
+                                    <div class="mt-0">
+                                        <button type="submit" class="btn btn-light w-100 small-font">Login</button>
                                     </div>
                                     <p id="login_message"></p>
                                 </form>
@@ -45,31 +45,31 @@
                             <form id="sign-form" onsubmit="return check()">
                                 <div class="mb-0">
                                     <label for="signup-email" class="form-label small-font custom-gap">Email</label>
-                                    <input type="email" class="form-control  form-control-sm half-width" id="signup-email" name="username" required placeholder="Enter your email">
+                                    <input type="email" class="form-control  form-control-sm" id="signup-email" name="username" required placeholder="Enter your email">
                                 </div>
 
                                 <div class="mb-0">
                                     <label for="signup-password" class="form-label small-font custom-gap">Password</label>
-                                    <input type="password" class="form-control  form-control-sm half-width " id="signup-password" name="password" required minlength="8" placeholder="Enter your password">
+                                    <input type="password" class="form-control  form-control-sm" id="signup-password" name="password" required minlength="8" placeholder="Enter your password">
                                     <div id="error_message" class="form-text"></div>
                                 </div>
                                
                                 <div class="mb-0">
                                     <label for="signup-repeatpass" class="form-label small-font custom-gap">Repeat Password</label>
-                                    <input type="password" class="form-control form-control-sm half-width" id="signup-repeatpass" name="repeatpassword" required placeholder="Repeat your password">
+                                    <input type="password" class="form-control form-control-sm" id="signup-repeatpass" name="repeatpassword" required placeholder="Repeat your password">
                                 </div>
                                 <div class="mb-0">
                                     <label for="signup-name" class="form-label small-font custom-gap custom-gap">First Name</label>
-                                    <input type="text" class="form-control form-control-sm half-width" id="signup-name" name="firstname" required placeholder="Enter your first name"> 
+                                    <input type="text" class="form-control form-control-sm" id="signup-name" name="firstname" required placeholder="Enter your first name"> 
                                   </div>
                                   
                                 <div class="mb-0">
                                     <label for="signup-familyName" class="form-label small-font custom-gap">Family Name</label>
-                                    <input type="text" class="form-control  form-control-sm half-width" id="signup-familyName" name="familyname" required placeholder="Enter your family name">
+                                    <input type="text" class="form-control  form-control-sm" id="signup-familyName" name="familyname" required placeholder="Enter your family name">
                                 </div>
                                 <div class="mb-0 ">
                                     <label for="signup-gender" class="form-label small-font custom-gap">Gender</label>
-                                    <select id="signup-gender" name="gender" class="form-select  form-select-sm half-width" required>
+                                    <select id="signup-gender" name="gender" class="form-select  form-select-sm" required>
                                         <option value="">Choose...</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -78,14 +78,14 @@
                                 </div>
                                 <div class="mb-0">
                                     <label for="signup-city" class="form-label small-font custom-gap">City</label>
-                                    <input type="text" class="form-control  form-control-sm half-width" id="signup-city" name="city" required placeholder="Enter your city">
+                                    <input type="text" class="form-control  form-control-sm" id="signup-city" name="city" required placeholder="Enter your city">
                                 </div>
                                 <div class="mb-1">
                                     <label for="signup-country" class="form-label small-font custom-gap">Country</label>
-                                    <input type="text" class="form-control  form-control-sm half-width " id="signup-country" name="country" required placeholder="Enter your country">
+                                    <input type="text" class="form-control  form-control-sm" id="signup-country" name="country" required placeholder="Enter your country">
                                 </div>
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-secondary w-50 small-font">Sign Up</button>
+                                    <button type="submit" class="btn btn-secondary w-100 small-font">Sign Up</button>
                                 </div>
                                 <p id="signup_message"></p>
                             </form>
@@ -95,88 +95,101 @@
                 
         </script> 
         <script type="text/view" id="profileview">
-            <div class="nav-bar">
-                <button id="home-button" class="nav-button" onclick="openHome()" style="text-decoration: underline;">home</button>
-                <button id="browse-button" class="nav-button" onclick="openBrowse()">browse</button>
-                <button id="account-button" class="nav-button" onclick="openAccount()">account</button>
-              </div>
-              <div class="container mt-4">
+            <nav class="navbar navbar-dark navbar-expand-lg navbar-custom">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#"></a>
+                    <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar links -->
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                        <ul class="navbar-nav  mt-2 mt-lg-0">
+                            <li class="nav-item mx-auto">
+                                <a class="nav-link active" id="home-button" onclick="openHome()" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item mx-auto">
+                                <a class="nav-link" id="browse-button" onclick="openBrowse()" href="#">Browse</a>
+                            </li>
+                            <li class="nav-item mx-auto">
+                                <a class="nav-link" id="account-button" onclick="openAccount()" href="#">Account</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+              </nav>
+            <div class="container mt-4">
                 <!-- Home Tab Content -->
                 <div id="home-tab" class="tab-pane active">
                     <!-- User Information and Posting Form -->
                     <div class="row justify-content-center">
-                    <div id="home-content" class="col-md-4">
-                        <!-- User Information -->
-                        <div class="mb-3">
-                            <p id="profile-error"></p>
-                            <p><strong>First Name:</strong> <span id="user-first-name"></span></p>
-                            <p><strong>Family Name:</strong> <span id="user-family-name"></span></p>
-                            <p><strong>Gender:</strong> <span id="user-gender"></span></p>
-                            <p><strong>City:</strong> <span id="user-city"></span></p>
-                            <p><strong>Country:</strong> <span id="user-country"></span></p>
-                            <p><strong>Email:</strong> <span id="user-mail"></span></p>
-                        </div>
-                        
-                        <!-- Message Posting Form -->
-                        <form class="mb-3">
-                            <div class="mb-3">
-                                <label for="user-text-to-be-posted" class="form-label">Message:</label>
-                                <input type="text" class="form-control" id="user-text-to-be-posted" required placeholder="Enter your text">
+                        <div id="home-content" class="col-md-4">
+                            <!-- User Information -->
+                            <div class="mx-auto">
+                                <p id="profile-error"></p>
+                                <p><strong>First Name:</strong> <span id="user-first-name"></span></p>
+                                <p><strong>Family Name:</strong> <span id="user-family-name"></span></p>
+                                <p><strong>Gender:</strong> <span id="user-gender"></span></p>
+                                <p><strong>City:</strong> <span id="user-city"></span></p>
+                                <p><strong>Country:</strong> <span id="user-country"></span></p>
+                                <p><strong>Email:</strong> <span id="user-mail"></span></p>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="text_save()">Post</button>
-                            <div id="message-post-response"></div>
-                        </form>
-                        <h2>All messages posted:</h2>
-                        <button class="btn btn-secondary" onclick="refresh()">Refresh</button>
-                        <div id="text-wall"></div>
-                    </div>
-                    </div>
 
-                    
-                    <div id="browse-tab" class="tab-pane">
-                        <div class="row justify-content-center">
-                            <div class="col-12 col-md-8 col-lg-6"> 
-                            <div id="browse-content" class="col-md-4">
-                        <form id="user-details" onsubmit="return userretrive()">
-                            <div class="mb-3">
-                                <label for="user-email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="user-email" name="email" placeholder="Enter e-mail">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Retrieve Information</button>
-                            <p id="retrive_message"></p>
-                        </form>
-                        <div id="user-wall"></div>
-                    </div>
+                            <!-- Message Posting Form -->
+                            <form class="mb-3">
+                                <div class="mb-3">
+                                    <label for="user-text-to-be-posted" class="form-label">Message:</label>
+                                    <input type="text" class="form-control" id="user-text-to-be-posted" required placeholder="Enter your text">
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="text_save()">Post</button>
+                                <div id="message-post-response"></div>
+                            </form>
+                            <h2>All messages posted:</h2>
+                            <button class="btn btn-secondary" onclick="refresh()">Refresh</button>
+                            <div id="text-wall"></div>
                         </div>
+                    </div>
+                </div>
+
+                <div id="browse-tab" class="tab-pane">
+                    <div class="row justify-content-center">
+                            <div id="browse-content" class="col-md-6">
+                                <form id="user-details" class="input-gro" onsubmit="return userretrive()">
+                                    <label for="user-email" class="form-label">Email:</label>
+                                        <input type="email" class="form-control" id="user-email" name="email" placeholder="Enter e-mail">
+                                        <button type="submit" class="btn btn-primary mt-3">Retrieve Information</button>
+                                    <p id="retrive_message"></p>
+                                </form>
+                                <div id="user-wall"></div>
+                            </div>
+                    </div>
                 </div>
 
                 <div id="account-tab" class="tab-pane">
                     <div class="row justify-content-center">
                         <div id="account-content" class="col-md-4">
-                    <form id="password-form" onsubmit="return passwordChange()">
-                        <div class="mb-3">
-                            <label for="old-password" class="form-label">Old Password</label>
-                            <input type="password" class="form-control" id="old-password" name="oldpassword" placeholder="Old password">
+                            <form id="password-form" onsubmit="return passwordChange()">
+                                <div class="mb-3">
+                                    <label for="old-password" class="form-label">Old Password</label>
+                                    <input type="password" class="form-control" id="old-password" name="oldpassword" placeholder="Old password">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="new-change-password" class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="new-change-password" name="changedpassword" required minlength="8" placeholder="New password">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="changed-password" class="form-label">Repeat New Password</label>
+                                    <input type="password" class="form-control" id="changed-password" name="changedpasswordrepeat" required minlength="8" placeholder="Repeat new password">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <p id="password_change_message"></p>
+                            </form>
+                            <button type="button" class="btn btn-secondary" onclick="signout()">Sign out</button>
+                            <p id="signout_message"></p>
                         </div>
-                
-                        <div class="mb-3">
-                            <label for="new-change-password" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="new-change-password" name="changedpassword" required minlength="8" placeholder="New password">
-                        </div>
-                        <div class="mb-3">
-                            <label for="changed-password" class="form-label">Repeat New Password</label>
-                            <input type="password" class="form-control" id="changed-password" name="changedpasswordrepeat" required minlength="8" placeholder="Repeat new password">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <p id="password_change_message"></p>
-                    </form>
-                    <button type="button" class="btn btn-secondary" onclick="signout()">Sign out</button>
-                    <p id="signout_message"></p>
+                    </div>
                 </div>
             </div>
-        </div>
-            </div>
-        </div>
         </script>
         <script type="text/view" id="browse-tab">
             <div id="home-content">
@@ -201,16 +214,17 @@
                         <input
                             type="text"
                             id="message-text-to-be-posted"
+                            class="form-control"
                             required
                             placeholder="Enter your text"
                         />
-                        <button onclick="other_user_test_save()">post</button>
+                        <button class="btn btn-primary mt-3" onclick="other_user_test_save()">post</button>
                     </div>
                     <div id="server-response"></div>
 
                 </form>
                 <h2 class="title">All messages posted:</h2>
-                <button onclick="other_user_refresh()">Refresh Message Wall</button>
+                <button class="btn btn-primary mt-3" onclick="other_user_refresh()">Refresh Message Wall</button>
                 <div id="other-user-text-wall"></div>
                     <div class="refresh-container ">
                 </div>

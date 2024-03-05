@@ -282,9 +282,9 @@ function openHome() {
   document.getElementById("browse-content").style.display = "none";
   document.getElementById("account-content").style.display = "none";
 
-  document.getElementById("home-button").style.textDecoration = "underline";
-  document.getElementById("browse-button").style.textDecoration = null;
-  document.getElementById("account-button").style.textDecoration = null;
+  document.getElementById("home-button").classList.add("active");
+  document.getElementById("browse-button").classList.remove("active");
+  document.getElementById("account-button").classList.remove("active");
   document.getElementById("text-wall").innerHTML = "";
 
   //to track in which tab we left the webapp we save it to local storage with specific key-> activeProfileViewTab
@@ -298,9 +298,9 @@ function openBrowse() {
   document.getElementById("browse-content").style.display = "block";
   document.getElementById("account-content").style.display = "none";
 
-  document.getElementById("home-button").style.textDecoration = null;
-  document.getElementById("browse-button").style.textDecoration = "underline";
-  document.getElementById("account-button").style.textDecoration = null;
+  document.getElementById("home-button").classList.remove("active");
+  document.getElementById("browse-button").classList.add("active");;
+  document.getElementById("account-button").classList.remove("active");
   document.getElementById("text-wall").innerHTML = "";
 
   localStorage.setItem("activeProfileViewTab", "browse");
@@ -311,9 +311,9 @@ function openAccount() {
   document.getElementById("browse-content").style.display = "none";
   document.getElementById("account-content").style.display = "block";
 
-  document.getElementById("home-button").style.textDecoration = null;
-  document.getElementById("browse-button").style.textDecoration = null;
-  document.getElementById("account-button").style.textDecoration = "underline";
+  document.getElementById("home-button").classList.remove("active");
+  document.getElementById("browse-button").classList.remove("active");
+  document.getElementById("account-button").classList.add("active");
   document.getElementById("text-wall").innerHTML = "";
 
   localStorage.setItem("activeProfileViewTab", "account");
