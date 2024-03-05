@@ -234,7 +234,7 @@ function check_login(event) {
 
         //login sucess-opening next page data retrieval and post-tezt retrieval
 
-       openHome();
+        openHome();
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
 
@@ -292,13 +292,12 @@ function openHome() {
 }
 
 function openBrowse() {
-
   document.getElementById("home-content").style.display = "none";
   document.getElementById("browse-content").style.display = "block";
   document.getElementById("account-content").style.display = "none";
 
   document.getElementById("home-button").classList.remove("active");
-  document.getElementById("browse-button").classList.add("active");;
+  document.getElementById("browse-button").classList.add("active");
   document.getElementById("account-button").classList.remove("active");
   document.getElementById("text-wall").innerHTML = "";
 
@@ -376,22 +375,26 @@ function text_save() {
   xmlr.onreadystatechange = function () {
     if (xmlr.readyState == 4) {
       let jsonResponse = JSON.parse(xmlr.responseText);
-      if(xmlr.status == 200){
-      document.getElementById("message-post-response").innerHTML =
-        jsonResponse.msg;
-    }else if (xmlr.status == 401) {
-      // Unauthorized
-      document.getElementById("message-post-response").innerHTML = "Unauthorized access. Please check your token.";
-    } else if (xmlr.status == 400) {
-      // Bad Request
-      document.getElementById("message-post-response").innerHTML = "Fields can not be empty. Please check the message.";
-    } else if (xmlr.status == 404) {
-      // Not Found
-      document.getElementById("message-post-response").innerHTML = "User not found. Please check the email address.";
-    } else if (xmlr.status == 500){
-      document.getElementById("message-post-response").innerHTML = "An error occurred. Please try again.";
+      if (xmlr.status == 200) {
+        document.getElementById("message-post-response").innerHTML =
+          jsonResponse.msg;
+      } else if (xmlr.status == 401) {
+        // Unauthorized
+        document.getElementById("message-post-response").innerHTML =
+          "Unauthorized access. Please check your token.";
+      } else if (xmlr.status == 400) {
+        // Bad Request
+        document.getElementById("message-post-response").innerHTML =
+          "Fields can not be empty. Please check the message.";
+      } else if (xmlr.status == 404) {
+        // Not Found
+        document.getElementById("message-post-response").innerHTML =
+          "User not found. Please check the email address.";
+      } else if (xmlr.status == 500) {
+        document.getElementById("message-post-response").innerHTML =
+          "An error occurred. Please try again.";
+      }
     }
-   }
   };
 
   textMessage = document.getElementById("user-text-to-be-posted").value;
@@ -445,46 +448,46 @@ function text_display() {
 
   xmlr.onreadystatechange = async function () {
     if (xmlr.readyState == 4) {
-      if(xmlr.status == 200){
-      let responseData = JSON.parse(xmlr.responseText);
-      allMessages = responseData.all_messages;
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
+        allMessages = responseData.all_messages;
 
-      console.log(allMessages.length);
+        console.log(allMessages.length);
 
-      for (let rep = 0; rep < allMessages.length; rep++) {
-        msgIndex = allMessages.length - rep;
-        la = allMessages[msgIndex - 1].latitude;
-        lo = allMessages[msgIndex - 1].longitude;
-        const response = await fetch(
-          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-        );
-        const data = await response.json();
-        const address = data.region;
-        console.log(data);
+        for (let rep = 0; rep < allMessages.length; rep++) {
+          msgIndex = allMessages.length - rep;
+          la = allMessages[msgIndex - 1].latitude;
+          lo = allMessages[msgIndex - 1].longitude;
+          const response = await fetch(
+            `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+          );
+          const data = await response.json();
+          const address = data.region;
+          console.log(data);
 
-        document.getElementById("text-wall").innerHTML += `
+          document.getElementById("text-wall").innerHTML += `
           <div id="message-${msgIndex}"> ${msgIndex}) - ${
-          allMessages[msgIndex - 1].message
-        } <br>
+            allMessages[msgIndex - 1].message
+          } <br>
           <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
           <span>Address: ${address}</span>
           </div>`;
+        }
       }
-    }}
-    else if(xmlr.status == 401){
-      document.getElementById("text-wall").innerHTML = "Session expired. Please log in again.";
-    }
-    else if(xmlr.status == 404){
-      document.getElementById("text-wall").innerHTML = "No messages to display. Post a message to start.";
-    }
-    else if(xmlr.status == 500){
-      document.getElementById("text-wall").innerHTML = "An unexpected error occurred.Please try again.";
+    } else if (xmlr.status == 401) {
+      document.getElementById("text-wall").innerHTML =
+        "Session expired. Please log in again.";
+    } else if (xmlr.status == 404) {
+      document.getElementById("text-wall").innerHTML =
+        "No messages to display. Post a message to start.";
+    } else if (xmlr.status == 500) {
+      document.getElementById("text-wall").innerHTML =
+        "An unexpected error occurred.Please try again.";
     }
   };
 
   //console.log(array.data[0].content); there is error here in chrome console!
   xmlr.send();
-  
 }
 
 function refresh() {
@@ -634,78 +637,80 @@ function userretrive() {
 
   xmlr.onreadystatechange = function () {
     if (xmlr.readyState == 4) {
-      if(xmlr.status == 200){ 
-      let responseData = JSON.parse(xmlr.responseText);
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
 
-      if (responseData.success == false) {
-        // if its not sucess
-        document.getElementById("user-wall").innerHTML = "";
-        document.getElementById("retrive_message").innerHTML = responseData.msg;
-        return;
-      } else {
-        document.getElementById("retrive_message").innerHTML = "";
-        //get whole browse tab without information
-        var browseTabContent = document.getElementById("browse-tab").innerHTML;
-        //browse tab is added to user-wall(whole page)
-        //user-wall is empty page in the beginning
-        document.getElementById("user-wall").innerHTML = browseTabContent;
+        if (responseData.success == false) {
+          // if its not sucess
+          document.getElementById("user-wall").innerHTML = "";
+          document.getElementById("retrive_message").innerHTML =
+            responseData.msg;
+          return;
+        } else {
+          document.getElementById("retrive_message").innerHTML = "";
+          //get whole browse tab without information
+          var browseTabContent =
+            document.getElementById("browse-tab").innerHTML;
+          //browse tab is added to user-wall(whole page)
+          //user-wall is empty page in the beginning
+          document.getElementById("user-wall").innerHTML = browseTabContent;
 
-        // display other users information in browse tab related fields
-        document.getElementById("other_first_name").textContent =
-          responseData.data.firstname;
-        document.getElementById("other_family_name").textContent =
-          responseData.data.familyname;
-        document.getElementById("other_gender").textContent =
-          responseData.data.gender;
-        document.getElementById("other_city").textContent =
-          responseData.data.city;
-        document.getElementById("other_country").textContent =
-          responseData.data.country;
-        document.getElementById("other_email").textContent =
-          responseData.data.email;
+          // display other users information in browse tab related fields
+          document.getElementById("other_first_name").textContent =
+            responseData.data.firstname;
+          document.getElementById("other_family_name").textContent =
+            responseData.data.familyname;
+          document.getElementById("other_gender").textContent =
+            responseData.data.gender;
+          document.getElementById("other_city").textContent =
+            responseData.data.city;
+          document.getElementById("other_country").textContent =
+            responseData.data.country;
+          document.getElementById("other_email").textContent =
+            responseData.data.email;
 
-        let xmlr2 = new XMLHttpRequest();
-        xmlr2.open("GET", `get_user_messages_by_email/${userEmail}`, true);
-        xmlr2.setRequestHeader("Authorization", token);
+          let xmlr2 = new XMLHttpRequest();
+          xmlr2.open("GET", `get_user_messages_by_email/${userEmail}`, true);
+          xmlr2.setRequestHeader("Authorization", token);
 
-        xmlr2.onreadystatechange = async function () {
-          if (xmlr2.status == 200 && xmlr2.readyState == 4) {
-            let userMessagesData = JSON.parse(xmlr2.responseText);
-            let allMessages = userMessagesData.all_messages;
+          xmlr2.onreadystatechange = async function () {
+            if (xmlr2.status == 200 && xmlr2.readyState == 4) {
+              let userMessagesData = JSON.parse(xmlr2.responseText);
+              let allMessages = userMessagesData.all_messages;
 
-            for (let rep = 0; rep < allMessages.length; rep++) {
-              msgIndex = allMessages.length - rep;
-              la = allMessages[msgIndex - 1].latitude;
-              lo = allMessages[msgIndex - 1].longitude;
-              const response = await fetch(
-                `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-              );
-              const data = await response.json();
-              const address = data.region;
+              for (let rep = 0; rep < allMessages.length; rep++) {
+                msgIndex = allMessages.length - rep;
+                la = allMessages[msgIndex - 1].latitude;
+                lo = allMessages[msgIndex - 1].longitude;
+                const response = await fetch(
+                  `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+                );
+                const data = await response.json();
+                const address = data.region;
 
-              document.getElementById(
-                "other-user-text-wall"
-              ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
-                allMessages[msgIndex - 1].message
-              } <br>
+                document.getElementById(
+                  "other-user-text-wall"
+                ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
+                  allMessages[msgIndex - 1].message
+                } <br>
               <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
               <span>Address: ${address}</span>
               </div>`;
+              }
             }
-          }
-        };
-        xmlr2.send();
-      }}
-      else if (xmlr.status == 401){
-        document.getElementById("retrive_message").innerHTML = "Session expired. Please log in again.";
+          };
+          xmlr2.send();
+        }
+      } else if (xmlr.status == 401) {
+        document.getElementById("retrive_message").innerHTML =
+          "Session expired. Please log in again.";
+      } else if (xmlr.status == 404) {
+        document.getElementById("retrive_message").innerHTML =
+          "User with this email not found in the system";
+      } else if (xmlr.status == 500) {
+        document.getElementById("retrive_message").innerHTML =
+          "An unexpected error occurred.Please try again.";
       }
-      else if(xmlr.status == 404){
-        document.getElementById("retrive_message").innerHTML = "User with this email not found in the system";
-      }
-      else if(xmlr.status == 500){
-        document.getElementById("retrive_message").innerHTML = "An unexpected error occurred.Please try again.";
-      }
-  
     }
   };
   xmlr.send();
@@ -733,25 +738,28 @@ function other_user_test_save() {
   xmlr.setRequestHeader("Content-Type", "application/json;charset = utf-8");
 
   xmlr.onreadystatechange = function () {
-    if ( xmlr.readyState == 4) {
-      if(xmlr.status == 200){
-      let responseData = JSON.parse(xmlr.responseText);
-      document.getElementById("server-response").innerHTML = responseData.msg;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML = responseData.msg;
+      } else if (xmlr.status == 401) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML =
+          "Session expired. Please log in again.";
+      } else if (xmlr.status == 400) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML =
+          "Fields can not be empty. " + responseData.msg;
+      } else if (xmlr.status == 404) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML =
+          "User with entered email does not exist. ";
+      } else if (xmlr.status == 500) {
+        document.getElementById("server-response").innerHTML =
+          "An unexpected error occurred.Please try again.";
+      }
     }
-    else if (xmlr.status == 401) {
-      let responseData = JSON.parse(xmlr.responseText);
-      document.getElementById("server-response").innerHTML = "Session expired. Please log in again.";
-    } else if (xmlr.status == 400) {
-      let responseData = JSON.parse(xmlr.responseText);
-      document.getElementById("server-response").innerHTML = "Fields can not be empty. " + responseData.msg;
-    } else if (xmlr.status == 404) {
-      let responseData = JSON.parse(xmlr.responseText);
-      document.getElementById("server-response").innerHTML = "User with entered email does not exist. " ;
-    } else if (xmlr.status == 500) {
-      document.getElementById("server-response").innerHTML = "An unexpected error occurred.Please try again.";
-    }
-  }
-};
+  };
   function success(pos) {
     console.log("ok");
     const lat = pos.coords.latitude;
@@ -800,40 +808,40 @@ function other_user_refresh() {
 
   xmlr.onreadystatechange = async function () {
     if (xmlr.readyState == 4) {
-      if(xmlr.status == 200){ 
-      let userMessagesData = JSON.parse(xmlr.responseText);
-      let allMessages = userMessagesData.all_messages;
+      if (xmlr.status == 200) {
+        let userMessagesData = JSON.parse(xmlr.responseText);
+        let allMessages = userMessagesData.all_messages;
 
-      for (let rep = 0; rep < allMessages.length; rep++) {
-        msgIndex = allMessages.length - rep;
-        la = allMessages[msgIndex - 1].latitude;
-        lo = allMessages[msgIndex - 1].longitude;
-        const response = await fetch(
-          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-        );
-        const data = await response.json();
-        const address = data.region;
+        for (let rep = 0; rep < allMessages.length; rep++) {
+          msgIndex = allMessages.length - rep;
+          la = allMessages[msgIndex - 1].latitude;
+          lo = allMessages[msgIndex - 1].longitude;
+          const response = await fetch(
+            `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+          );
+          const data = await response.json();
+          const address = data.region;
 
-        document.getElementById(
-          "other-user-text-wall"
-        ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
-          allMessages[msgIndex - 1].message
-        } <br>
+          document.getElementById(
+            "other-user-text-wall"
+          ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
+            allMessages[msgIndex - 1].message
+          } <br>
               <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
               <span>Address: ${address}</span>
               </div>`;
+        }
       }
-    }}
-    else if(xmlr.status == 401){
-      document.getElementById("other-user-text-wall").innerHTML = "Session expired. Please log in again.";
+    } else if (xmlr.status == 401) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "Session expired. Please log in again.";
+    } else if (xmlr.status == 404) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "Entered email does not exist";
+    } else if (xmlr.status == 500) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "An unexpected error occurred.Please try again.";
     }
-    else if(xmlr.status == 404){
-      document.getElementById("other-user-text-wall").innerHTML = "Entered email does not exist";
-    } 
-    else if(xmlr.status == 500){
-      document.getElementById("other-user-text-wall").innerHTML = "An unexpected error occurred.Please try again.";
-    }
-   
   };
   xmlr.send();
 }
