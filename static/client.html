@@ -84,7 +84,7 @@
                                     <label for="signup-country" class="form-label small-font custom-gap">Country</label>
                                     <input type="text" class="form-control  form-control-sm" id="signup-country" name="country" required placeholder="Enter your country">
                                 </div>
-                                <div class="d-grid gap-2">
+                                <div class="mt-0">
                                     <button type="submit" class="btn btn-secondary w-100 small-font">Sign Up</button>
                                 </div>
                                 <p id="signup_message"></p>
@@ -98,7 +98,7 @@
             <nav class="navbar navbar-dark navbar-expand-lg navbar-custom">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#"></a>
-                    <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- Navbar links -->
@@ -117,9 +117,9 @@
                     </div>
                 </div>
               </nav>
-            <div class="container mt-4">
+            <div class="container-fluid mt-4">
                 <!-- Home Tab Content -->
-                <div id="home-tab" class="tab-pane active">
+                <div id="home-tab">
                     <!-- User Information and Posting Form -->
                     <div class="row justify-content-center">
                         <div id="home-content" class="col-md-4">
@@ -150,10 +150,10 @@
                     </div>
                 </div>
 
-                <div id="browse-tab" class="tab-pane">
+                <div id="browse-tab">
                     <div class="row justify-content-center">
                             <div id="browse-content" class="col-md-6">
-                                <form id="user-details" class="input-gro" onsubmit="return userretrive()">
+                                <form id="user-details" onsubmit="return userretrive()">
                                     <label for="user-email" class="form-label">Email:</label>
                                         <input type="email" class="form-control" id="user-email" name="email" placeholder="Enter e-mail">
                                         <button type="submit" class="btn btn-primary mt-3">Retrieve Information</button>
@@ -164,7 +164,7 @@
                     </div>
                 </div>
 
-                <div id="account-tab" class="tab-pane">
+                <div id="account-tab" >
                     <div class="row justify-content-center">
                         <div id="account-content" class="col-md-4">
                             <form id="password-form" onsubmit="return passwordChange()">

@@ -458,11 +458,11 @@ function text_display() {
           msgIndex = allMessages.length - rep;
           la = allMessages[msgIndex - 1].latitude;
           lo = allMessages[msgIndex - 1].longitude;
-          const response = await fetch(
+          const response = await fetch( //fetching the address from the latitude and longitude
             `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
           );
-          const data = await response.json();
-          const address = data.region;
+          const data = await response.json(); //converting the response to json
+          const address = data.region; //getting the region from the json response
           console.log(data);
 
           document.getElementById("text-wall").innerHTML += `
@@ -470,7 +470,7 @@ function text_display() {
             allMessages[msgIndex - 1].message
           } <br>
           <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
-          <span>Address: ${address}</span>
+          <span>Address: ${address}</span> 
           </div>`;
         }
       }
@@ -748,8 +748,13 @@ function other_user_test_save() {
           "Session expired. Please log in again.";
       } else if (xmlr.status == 400) {
         let responseData = JSON.parse(xmlr.responseText);
+        if(responseData.msg=="Messsage cannot be empty"){ 
         document.getElementById("server-response").innerHTML =
-          "Fields can not be empty. " + responseData.msg;
+          "Message fields can not be empty. Please check again." 
+        }else if(responseData.msg=="Email cannot be empty"){
+          document.getElementById("server-response").innerHTML =
+          "Email field can not be empty. Please check again. " 
+        }
       } else if (xmlr.status == 404) {
         let responseData = JSON.parse(xmlr.responseText);
         document.getElementById("server-response").innerHTML =
