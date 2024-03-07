@@ -459,7 +459,7 @@ function text_display() {
           la = allMessages[msgIndex - 1].latitude;
           lo = allMessages[msgIndex - 1].longitude;
           const response = await fetch( //fetching the address from the latitude and longitude
-            `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+            `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
           );
           const data = await response.json(); //converting the response to json
           const address = data.region; //getting the region from the json response
@@ -683,7 +683,7 @@ function userretrive() {
                 la = allMessages[msgIndex - 1].latitude;
                 lo = allMessages[msgIndex - 1].longitude;
                 const response = await fetch(
-                  `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+                  `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
                 );
                 const data = await response.json();
                 const address = data.region;
@@ -822,7 +822,7 @@ function other_user_refresh() {
           la = allMessages[msgIndex - 1].latitude;
           lo = allMessages[msgIndex - 1].longitude;
           const response = await fetch(
-            `https://geocode.xyz/${la},${lo}?json=1&auth=130608772481137e15907554x98896`
+            `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
           );
           const data = await response.json();
           const address = data.region;
