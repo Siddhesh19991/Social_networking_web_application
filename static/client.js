@@ -87,16 +87,13 @@ function check() {
       if (xmlr.status == 201) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signup_message").innerHTML =
-          "The user has been created";
+          "The user is created";
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         if (jsonResponse.msg == "incorrect structure of the email") {
           document.getElementById("signup_message").innerHTML =
             "The email structure is not right";
-        } else if (jsonResponse.msg == "User already exists") {
-          document.getElementById("signup_message").innerHTML =
-            "This email Id already exists";
-        } else if (jsonResponse.msg == "no empty fields allowed") {
+        }  else if (jsonResponse.msg == "no empty fields allowed") {
           document.getElementById("signup_message").innerHTML =
             "None of the input fields can be empty";
         } else if (
@@ -108,7 +105,7 @@ function check() {
       } else if (xmlr.status == 409) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signup_message").innerHTML =
-          "Error: Conflict with the current state of the server";
+          "Error: User already exist. Try again.";
       } else if (xmlr.status == 405) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.gtElementById("signup_message").innerHTML =
@@ -244,14 +241,12 @@ function check_login(event) {
         } else if (jsonResponse.msg == "user does not exist") {
           document.getElementById("login_message").innerHTML =
             "User does not exist in the database";
-        } else if (jsonResponse.msg == "incorrect password") {
-          document.getElementById("login_message").innerHTML =
-            "You have entered the wrong password";
-        }
-      } else if (xmlr.status == 401) {
+        } 
+      } 
+      else if (xmlr.status == 401) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("login_message").innerHTML =
-          "Unauthorized error";
+          "Password is not correct. Check again";
       } else if (xmlr.status == 405) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.gtElementById("login_message").innerHTML =
@@ -375,7 +370,7 @@ function text_save() {
   xmlr.onreadystatechange = function () {
     if (xmlr.readyState == 4) {
       let jsonResponse = JSON.parse(xmlr.responseText);
-      if (xmlr.status == 200) {
+      if (xmlr.status == 201) {
         document.getElementById("message-post-response").innerHTML =
           jsonResponse.msg;
       } else if (xmlr.status == 401) {
@@ -386,7 +381,7 @@ function text_save() {
         // Bad Request
         document.getElementById("message-post-response").innerHTML =
           "Fields can not be empty. Please check the message.";
-      } else if (xmlr.status == 404) {
+      } else if (xmlr.status == 400) {
         // Not Found
         document.getElementById("message-post-response").innerHTML =
           "User not found. Please check the email address.";
@@ -402,6 +397,7 @@ function text_save() {
   if (textMessage != "") {
     document.getElementById("user-text-to-be-posted").value = "";
 
+    //called when location successfully retrieved
     function success(pos) {
       console.log("ok");
       const lat = pos.coords.latitude;
@@ -416,7 +412,7 @@ function text_save() {
         })
       );
     }
-
+    //called if there is an error getting the location
     function error(err) {
       console.error("Error occurred while getting geolocation:", err);
 
@@ -431,7 +427,7 @@ function text_save() {
     }
 
     const options = { async: false };
-
+    //request the current position of the device 
     navigator.geolocation.getCurrentPosition(success, error, options);
   } else {
     document.getElementById("message-post-response").innerHTML =
@@ -477,12 +473,13 @@ function text_display() {
     } else if (xmlr.status == 401) {
       document.getElementById("text-wall").innerHTML =
         "Session expired. Please log in again.";
-    } else if (xmlr.status == 404) {
-      document.getElementById("text-wall").innerHTML =
-        "No messages to display. Post a message to start.";
-    } else if (xmlr.status == 500) {
+    }  else if (xmlr.status == 500) {
       document.getElementById("text-wall").innerHTML =
         "An unexpected error occurred.Please try again.";
+    }
+    else if (xmlr.status == 405) {
+      document.getElementById("text-wall").innerHTML =
+      "Error: The request method is not supported by the target resource ";
     }
   };
 
@@ -527,9 +524,6 @@ function passwordChange() {
         if (jsonResponse.msg == "no empty fields allowed") {
           document.getElementById("password_change_message").innerHTML =
             "None of the input fields can be empty";
-        } else if (jsonResponse.msg == "old password entered is not correct!") {
-          document.getElementById("password_change_message").innerHTML =
-            "The old password entered is incorrect";
         } else if (
           jsonResponse.msg == "old and new password cannot be the same!"
         ) {
@@ -546,7 +540,12 @@ function passwordChange() {
         if (jsonResponse.msg == "token invalid") {
           document.getElementById("password_change_message").innerHTML =
             "Invalid token error";
-        } else {
+        }  
+        else if (jsonResponse.msg == "old password entered is not correct!") {
+          document.getElementById("password_change_message").innerHTML =
+          "The old password entered is incorrect";
+        }
+        else {
           document.getElementById("password_change_message").innerHTML =
             "Unauthorized error";
         }
@@ -601,7 +600,7 @@ function signout() {
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signout_message").innerHTML =
-          "Bad request error";
+          "Bad request error. token not found";
       } else if (xmlr.status == 401) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         if (jsonResponse.msg == "token invalid") {
