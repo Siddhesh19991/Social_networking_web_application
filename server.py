@@ -39,7 +39,7 @@ def sign_up():
         return jsonify({"success": False, "msg": "password must be atleast 8 characters long"}), 400
 
     if (database_helper.find_user(email) == True):
-        return jsonify({"success": False, "msg": "User already exists"}), 400
+        return jsonify({"success": False, "msg": "User already exists"}), 409
 
     if password == "":
         return jsonify({"success": False, "msg": "password can not be empty"}), 400
@@ -91,7 +91,7 @@ def sign_in():
         database_helper.token_store(email, token)
         return jsonify({"success": True, "data": token, "msg": "logged in successucfully"}), 200
     else:
-        return jsonify({"success": False, "msg": "incorrect password"}), 400
+        return jsonify({"success": False, "msg": "incorrect password"}), 401
 
 
 @app.route("/sign_out", methods=["DELETE"])
@@ -100,8 +100,12 @@ def sign_out():
     token = request.headers.get("Authorization")
     user_data = database_helper.get_user_data_with_token(token)
 
+    if token == None:
+        return jsonify({"success": False, "msg": "no token found"}), 400
+
     if user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "token invalid"}), 401
+   
 
     email = database_helper.get_email(token)
 
@@ -133,7 +137,7 @@ def change_password():
     if (old_password_from_user == None or new_password_from_user == None):
         return jsonify({"success": False, "msg": "no empty fields allowed"}), 400
     if (old_password_from_user != password_from_database):
-        return jsonify({"success": False, "msg": "old password entered is not correct!"}), 400
+        return jsonify({"success": False, "msg": "old password entered is not correct!"}), 401
     if (old_password_from_user == new_password_from_user):
         return jsonify({"success": False, "msg": "old and new password cannot be the same!"}), 400
     if len(new_password_from_user) < 8:
@@ -150,7 +154,7 @@ def get_user_data_by_token():
     user_data = database_helper.get_user_data_with_token(token)
 
     if user_data == None:
-        return jsonify({"success": False, "msg": "token invalid!!"}), 400
+        return jsonify({"success": False, "msg": "token invalid!!"}), 401
 
     received_data = {  # create a dictionary with the user data(json)
         "firstname": user_data[0],
@@ -171,13 +175,13 @@ def get_user_data_by_email(email):
     token_user_data = database_helper.get_user_data_with_token(token)
 
     if token_user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "token invalid"}), 401 #unauthorized
 
     # get the user data with the email
     email_user_data = database_helper.get_user_data_with_email(email)
 
     if email_user_data == None:
-        return jsonify({"success": False, "msg": "User with this email not found! Check the email."}), 200
+        return jsonify({"success": False, "msg": "User with this email not found! Check the email."}), 404
 
     received_data = {
         "firstname": email_user_data[0],
@@ -197,7 +201,7 @@ def post_msg():
     token_user_data = database_helper.get_user_data_with_token(token)
 
     if token_user_data == None:
-        return jsonify({"success": False, "msg": "token invalid"}), 200
+        return jsonify({"success": False, "msg": "Unauthorized:token invalid"}), 401
 
     request_json = request.get_json()  # user input (request data)
     user_entered_email = request_json.get(
@@ -215,11 +219,11 @@ def post_msg():
     print(latitude)
 
     if user_entered_message == None or user_entered_message == "":
-        return jsonify({"success": False, "msg": "Messsage cannot be empty"}), 200
+        return jsonify({"success": False, "msg": "Messsage cannot be empty"}), 400
     if user_entered_email == None or user_entered_email == "":
-        return jsonify({"success": False, "msg": "Email cannot be empty"}), 200
+        return jsonify({"success": False, "msg": "Email cannot be empty"}), 400
     if database_helper.find_user(user_entered_email) == False:
-        return jsonify({"success": False, "msg": "user with entered email does not exist"}), 200
+        return jsonify({"success": False, "msg": "user not found"}), 400
 
     database_helper.append_message(
         sender_email=token_user_data[5],
@@ -229,7 +233,7 @@ def post_msg():
         longitude=longitude
     )
 
-    return jsonify({"success": True, "msg": "message posted!"}), 200
+    return jsonify({"success": True, "msg": "Message posted!"}), 201
 
 
 @app.route("/get_user_messages_by_token", methods=["GET"])
@@ -237,13 +241,16 @@ def get_msg_token():
     token = request.headers.get("Authorization")
 
     if database_helper.get_token(token) == False:
-        return jsonify({"success": False, "msg": "token does not exist"}), 200
+        return jsonify({"success": False, "msg": "token does not exist"}), 401
 
     # get email from the database with sending the token
     email = database_helper.get_email(token)
 
     # get all messages from the database with email
     all_msg = database_helper.get_messages(email)
+
+    if all_msg is None or len(all_msg) == 0:
+        return jsonify({"success": False, "msg": "No messages found"}), 200
 
     print(all_msg)
     formatted_messages = []  # formatting and store messages in formatted_messages list
@@ -265,10 +272,10 @@ def get_msg_email(email):
     token = request.headers.get("Authorization")
 
     if database_helper.get_token(token) == False:
-        return jsonify({"success": False, "msg": "token doesnt exist"}), 200
+        return jsonify({"success": False, "msg": "token doesnt exist"}), 401
 
     if database_helper.find_user(email) == False:
-        return jsonify({"success": False, "msg": "email doesnt exist"}), 200
+        return jsonify({"success": False, "msg": "email doesnt exist"}), 404
 
     all_msg = database_helper.get_messages(email)
     formatted_messages = []

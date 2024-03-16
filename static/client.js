@@ -87,16 +87,13 @@ function check() {
       if (xmlr.status == 201) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signup_message").innerHTML =
-          "The user has been created";
+          "The user is created";
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         if (jsonResponse.msg == "incorrect structure of the email") {
           document.getElementById("signup_message").innerHTML =
             "The email structure is not right";
-        } else if (jsonResponse.msg == "User already exists") {
-          document.getElementById("signup_message").innerHTML =
-            "This email Id already exists";
-        } else if (jsonResponse.msg == "no empty fields allowed") {
+        }  else if (jsonResponse.msg == "no empty fields allowed") {
           document.getElementById("signup_message").innerHTML =
             "None of the input fields can be empty";
         } else if (
@@ -108,7 +105,7 @@ function check() {
       } else if (xmlr.status == 409) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signup_message").innerHTML =
-          "Error: Conflict with the current state of the server";
+          "Error: User already exist. Try again.";
       } else if (xmlr.status == 405) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.gtElementById("signup_message").innerHTML =
@@ -234,8 +231,7 @@ function check_login(event) {
 
         //login sucess-opening next page data retrieval and post-tezt retrieval
 
-        data_retrival();
-        text_display();
+        openHome();
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
 
@@ -245,14 +241,12 @@ function check_login(event) {
         } else if (jsonResponse.msg == "user does not exist") {
           document.getElementById("login_message").innerHTML =
             "User does not exist in the database";
-        } else if (jsonResponse.msg == "incorrect password") {
-          document.getElementById("login_message").innerHTML =
-            "You have entered the wrong password";
-        }
-      } else if (xmlr.status == 401) {
+        } 
+      } 
+      else if (xmlr.status == 401) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("login_message").innerHTML =
-          "Unauthorized error";
+          "Password is not correct. Check again";
       } else if (xmlr.status == 405) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.gtElementById("login_message").innerHTML =
@@ -282,9 +276,9 @@ function openHome() {
   document.getElementById("browse-content").style.display = "none";
   document.getElementById("account-content").style.display = "none";
 
-  document.getElementById("home-button").style.textDecoration = "underline";
-  document.getElementById("browse-button").style.textDecoration = null;
-  document.getElementById("account-button").style.textDecoration = null;
+  document.getElementById("home-button").classList.add("active");
+  document.getElementById("browse-button").classList.remove("active");
+  document.getElementById("account-button").classList.remove("active");
   document.getElementById("text-wall").innerHTML = "";
 
   //to track in which tab we left the webapp we save it to local storage with specific key-> activeProfileViewTab
@@ -293,15 +287,13 @@ function openHome() {
 }
 
 function openBrowse() {
-  text_display();
-
   document.getElementById("home-content").style.display = "none";
   document.getElementById("browse-content").style.display = "block";
   document.getElementById("account-content").style.display = "none";
 
-  document.getElementById("home-button").style.textDecoration = null;
-  document.getElementById("browse-button").style.textDecoration = "underline";
-  document.getElementById("account-button").style.textDecoration = null;
+  document.getElementById("home-button").classList.remove("active");
+  document.getElementById("browse-button").classList.add("active");
+  document.getElementById("account-button").classList.remove("active");
   document.getElementById("text-wall").innerHTML = "";
 
   localStorage.setItem("activeProfileViewTab", "browse");
@@ -312,9 +304,9 @@ function openAccount() {
   document.getElementById("browse-content").style.display = "none";
   document.getElementById("account-content").style.display = "block";
 
-  document.getElementById("home-button").style.textDecoration = null;
-  document.getElementById("browse-button").style.textDecoration = null;
-  document.getElementById("account-button").style.textDecoration = "underline";
+  document.getElementById("home-button").classList.remove("active");
+  document.getElementById("browse-button").classList.remove("active");
+  document.getElementById("account-button").classList.add("active");
   document.getElementById("text-wall").innerHTML = "";
 
   localStorage.setItem("activeProfileViewTab", "account");
@@ -376,10 +368,27 @@ function text_save() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
+    if (xmlr.readyState == 4) {
       let jsonResponse = JSON.parse(xmlr.responseText);
-      document.getElementById("message-post-response").innerHTML =
-        jsonResponse.msg;
+      if (xmlr.status == 201) {
+        document.getElementById("message-post-response").innerHTML =
+          jsonResponse.msg;
+      } else if (xmlr.status == 401) {
+        // Unauthorized
+        document.getElementById("message-post-response").innerHTML =
+          "Unauthorized access. Please check your token.";
+      } else if (xmlr.status == 400) {
+        // Bad Request
+        document.getElementById("message-post-response").innerHTML =
+          "Fields can not be empty. Please check the message.";
+      } else if (xmlr.status == 400) {
+        // Not Found
+        document.getElementById("message-post-response").innerHTML =
+          "User not found. Please check the email address.";
+      } else if (xmlr.status == 500) {
+        document.getElementById("message-post-response").innerHTML =
+          "An error occurred. Please try again.";
+      }
     }
   };
 
@@ -388,6 +397,7 @@ function text_save() {
   if (textMessage != "") {
     document.getElementById("user-text-to-be-posted").value = "";
 
+    //called when location successfully retrieved
     function success(pos) {
       console.log("ok");
       const lat = pos.coords.latitude;
@@ -402,7 +412,7 @@ function text_save() {
         })
       );
     }
-
+    //called if there is an error getting the location
     function error(err) {
       console.error("Error occurred while getting geolocation:", err);
 
@@ -417,11 +427,11 @@ function text_save() {
     }
 
     const options = { async: false };
-
+    //request the current position of the device 
     navigator.geolocation.getCurrentPosition(success, error, options);
   } else {
     document.getElementById("message-post-response").innerHTML =
-      "Cannot be empty";
+      "Field can not be Empty";
   }
 }
 
@@ -433,36 +443,47 @@ function text_display() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = async function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let responseData = JSON.parse(xmlr.responseText);
-      allMessages = responseData.all_messages;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
+        allMessages = responseData.all_messages;
 
-      console.log(allMessages.length);
+        console.log(allMessages.length);
 
-      for (let rep = 0; rep < allMessages.length; rep++) {
-        msgIndex = allMessages.length - rep;
-        la = allMessages[msgIndex - 1].latitude;
-        lo = allMessages[msgIndex - 1].longitude;
-        const response = await fetch(
-          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-        );
-        const data = await response.json();
-        const address = data.region;
-        console.log(data);
+        for (let rep = 0; rep < allMessages.length; rep++) {
+          msgIndex = allMessages.length - rep;
+          la = allMessages[msgIndex - 1].latitude;
+          lo = allMessages[msgIndex - 1].longitude;
+          const response = await fetch( //fetching the address from the latitude and longitude
+            `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
+          );
+          const data = await response.json(); //converting the response to json
+          const address = data.region; //getting the region from the json response
+          console.log(data);
 
-        document.getElementById("text-wall").innerHTML += `
+          document.getElementById("text-wall").innerHTML += `
           <div id="message-${msgIndex}"> ${msgIndex}) - ${
-          allMessages[msgIndex - 1].message
-        } <br>
+            allMessages[msgIndex - 1].message
+          } <br>
           <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
-          <span>Address: ${address}</span>
+          <span>Address: ${address}</span> 
           </div>`;
+        }
       }
+    } else if (xmlr.status == 401) {
+      document.getElementById("text-wall").innerHTML =
+        "Session expired. Please log in again.";
+    }  else if (xmlr.status == 500) {
+      document.getElementById("text-wall").innerHTML =
+        "An unexpected error occurred.Please try again.";
+    }
+    else if (xmlr.status == 405) {
+      document.getElementById("text-wall").innerHTML =
+      "Error: The request method is not supported by the target resource ";
     }
   };
 
   //console.log(array.data[0].content); there is error here in chrome console!
-
   xmlr.send();
 }
 
@@ -503,9 +524,6 @@ function passwordChange() {
         if (jsonResponse.msg == "no empty fields allowed") {
           document.getElementById("password_change_message").innerHTML =
             "None of the input fields can be empty";
-        } else if (jsonResponse.msg == "old password entered is not correct!") {
-          document.getElementById("password_change_message").innerHTML =
-            "The old password entered is incorrect";
         } else if (
           jsonResponse.msg == "old and new password cannot be the same!"
         ) {
@@ -522,7 +540,12 @@ function passwordChange() {
         if (jsonResponse.msg == "token invalid") {
           document.getElementById("password_change_message").innerHTML =
             "Invalid token error";
-        } else {
+        }  
+        else if (jsonResponse.msg == "old password entered is not correct!") {
+          document.getElementById("password_change_message").innerHTML =
+          "The old password entered is incorrect";
+        }
+        else {
           document.getElementById("password_change_message").innerHTML =
             "Unauthorized error";
         }
@@ -577,7 +600,7 @@ function signout() {
       } else if (xmlr.status == 400) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         document.getElementById("signout_message").innerHTML =
-          "Bad request error";
+          "Bad request error. token not found";
       } else if (xmlr.status == 401) {
         let jsonResponse = JSON.parse(xmlr.responseText);
         if (jsonResponse.msg == "token invalid") {
@@ -612,67 +635,80 @@ function userretrive() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let responseData = JSON.parse(xmlr.responseText);
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
 
-      if (responseData.success == false) {
-        // if its not sucess
-        document.getElementById("user-wall").innerHTML = "";
-        document.getElementById("retrive_message").innerHTML = responseData.msg;
-        return;
-      } else {
-        document.getElementById("retrive_message").innerHTML = "";
-        //get whole browse tab without information
-        var browseTabContent = document.getElementById("browse-tab").innerHTML;
-        //browse tab is added to user-wall(whole page)
-        //user-wall is empty page in the beginning
-        document.getElementById("user-wall").innerHTML = browseTabContent;
+        if (responseData.success == false) {
+          // if its not sucess
+          document.getElementById("user-wall").innerHTML = "";
+          document.getElementById("retrive_message").innerHTML =
+            responseData.msg;
+          return;
+        } else {
+          document.getElementById("retrive_message").innerHTML = "";
+          //get whole browse tab without information
+          var browseTabContent =
+            document.getElementById("browse-tab").innerHTML;
+          //browse tab is added to user-wall(whole page)
+          //user-wall is empty page in the beginning
+          document.getElementById("user-wall").innerHTML = browseTabContent;
 
-        // display other users information in browse tab related fields
-        document.getElementById("other_first_name").textContent =
-          responseData.data.firstname;
-        document.getElementById("other_family_name").textContent =
-          responseData.data.familyname;
-        document.getElementById("other_gender").textContent =
-          responseData.data.gender;
-        document.getElementById("other_city").textContent =
-          responseData.data.city;
-        document.getElementById("other_country").textContent =
-          responseData.data.country;
-        document.getElementById("other_email").textContent =
-          responseData.data.email;
+          // display other users information in browse tab related fields
+          document.getElementById("other_first_name").textContent =
+            responseData.data.firstname;
+          document.getElementById("other_family_name").textContent =
+            responseData.data.familyname;
+          document.getElementById("other_gender").textContent =
+            responseData.data.gender;
+          document.getElementById("other_city").textContent =
+            responseData.data.city;
+          document.getElementById("other_country").textContent =
+            responseData.data.country;
+          document.getElementById("other_email").textContent =
+            responseData.data.email;
 
-        let xmlr2 = new XMLHttpRequest();
-        xmlr2.open("GET", `get_user_messages_by_email/${userEmail}`, true);
-        xmlr2.setRequestHeader("Authorization", token);
+          let xmlr2 = new XMLHttpRequest();
+          xmlr2.open("GET", `get_user_messages_by_email/${userEmail}`, true);
+          xmlr2.setRequestHeader("Authorization", token);
 
-        xmlr2.onreadystatechange = async function () {
-          if (xmlr2.status == 200 && xmlr2.readyState == 4) {
-            let userMessagesData = JSON.parse(xmlr2.responseText);
-            let allMessages = userMessagesData.all_messages;
+          xmlr2.onreadystatechange = async function () {
+            if (xmlr2.status == 200 && xmlr2.readyState == 4) {
+              let userMessagesData = JSON.parse(xmlr2.responseText);
+              let allMessages = userMessagesData.all_messages;
 
-            for (let rep = 0; rep < allMessages.length; rep++) {
-              msgIndex = allMessages.length - rep;
-              la = allMessages[msgIndex - 1].latitude;
-              lo = allMessages[msgIndex - 1].longitude;
-              const response = await fetch(
-                `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-              );
-              const data = await response.json();
-              const address = data.region;
+              for (let rep = 0; rep < allMessages.length; rep++) {
+                msgIndex = allMessages.length - rep;
+                la = allMessages[msgIndex - 1].latitude;
+                lo = allMessages[msgIndex - 1].longitude;
+                const response = await fetch(
+                  `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
+                );
+                const data = await response.json();
+                const address = data.region;
 
-              document.getElementById(
-                "other-user-text-wall"
-              ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
-                allMessages[msgIndex - 1].message
-              } <br>
+                document.getElementById(
+                  "other-user-text-wall"
+                ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
+                  allMessages[msgIndex - 1].message
+                } <br>
               <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
               <span>Address: ${address}</span>
               </div>`;
+              }
             }
-          }
-        };
-        xmlr2.send();
+          };
+          xmlr2.send();
+        }
+      } else if (xmlr.status == 401) {
+        document.getElementById("retrive_message").innerHTML =
+          "Session expired. Please log in again.";
+      } else if (xmlr.status == 404) {
+        document.getElementById("retrive_message").innerHTML =
+          "User with this email not found in the system";
+      } else if (xmlr.status == 500) {
+        document.getElementById("retrive_message").innerHTML =
+          "An unexpected error occurred.Please try again.";
       }
     }
   };
@@ -688,10 +724,10 @@ function other_user_test_save() {
   ).value;
   otherUserEmail = document.getElementById("user-email").value;
 
-  if (textMessageToBePosted == "") {
-    document.getElementById("server-response").innerHTML = "Cannot be empty";
-    return false;
-  }
+  //if (textMessageToBePosted == "") {
+  //  document.getElementById("server-response").innerHTML = "Cannot be empty";
+  //  return false;
+  //}
   document.getElementById("message-text-to-be-posted").value = "";
 
   let token = localStorage.getItem("token");
@@ -701,9 +737,31 @@ function other_user_test_save() {
   xmlr.setRequestHeader("Content-Type", "application/json;charset = utf-8");
 
   xmlr.onreadystatechange = function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let responseData = JSON.parse(xmlr.responseText);
-      document.getElementById("server-response").innerHTML = responseData.msg;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML = responseData.msg;
+      } else if (xmlr.status == 401) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML =
+          "Session expired. Please log in again.";
+      } else if (xmlr.status == 400) {
+        let responseData = JSON.parse(xmlr.responseText);
+        if(responseData.msg=="Messsage cannot be empty"){ 
+        document.getElementById("server-response").innerHTML =
+          "Message fields can not be empty. Please check again." 
+        }else if(responseData.msg=="Email cannot be empty"){
+          document.getElementById("server-response").innerHTML =
+          "Email field can not be empty. Please check again. " 
+        }
+      } else if (xmlr.status == 404) {
+        let responseData = JSON.parse(xmlr.responseText);
+        document.getElementById("server-response").innerHTML =
+          "User with entered email does not exist. ";
+      } else if (xmlr.status == 500) {
+        document.getElementById("server-response").innerHTML =
+          "An unexpected error occurred.Please try again.";
+      }
     }
   };
   function success(pos) {
@@ -753,29 +811,40 @@ function other_user_refresh() {
   xmlr.setRequestHeader("Authorization", token);
 
   xmlr.onreadystatechange = async function () {
-    if (xmlr.status == 200 && xmlr.readyState == 4) {
-      let userMessagesData = JSON.parse(xmlr.responseText);
-      let allMessages = userMessagesData.all_messages;
+    if (xmlr.readyState == 4) {
+      if (xmlr.status == 200) {
+        let userMessagesData = JSON.parse(xmlr.responseText);
+        let allMessages = userMessagesData.all_messages;
 
-      for (let rep = 0; rep < allMessages.length; rep++) {
-        msgIndex = allMessages.length - rep;
-        la = allMessages[msgIndex - 1].latitude;
-        lo = allMessages[msgIndex - 1].longitude;
-        const response = await fetch(
-          `https://geocode.xyz/${la},${lo}?json=1&auth=988895664341174762922x108679`
-        );
-        const data = await response.json();
-        const address = data.region;
+        for (let rep = 0; rep < allMessages.length; rep++) {
+          msgIndex = allMessages.length - rep;
+          la = allMessages[msgIndex - 1].latitude;
+          lo = allMessages[msgIndex - 1].longitude;
+          const response = await fetch(
+            `https://geocode.xyz/${la},${lo}?json=1&auth=974118388864149676164x70514`
+          );
+          const data = await response.json();
+          const address = data.region;
 
-        document.getElementById(
-          "other-user-text-wall"
-        ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
-          allMessages[msgIndex - 1].message
-        } <br>
+          document.getElementById(
+            "other-user-text-wall"
+          ).innerHTML += `<div id="message-${msgIndex}"> ${msgIndex} - ${
+            allMessages[msgIndex - 1].message
+          } <br>
               <i>posted by: ${allMessages[msgIndex - 1].sender}</i><br>
               <span>Address: ${address}</span>
               </div>`;
+        }
       }
+    } else if (xmlr.status == 401) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "Session expired. Please log in again.";
+    } else if (xmlr.status == 404) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "Entered email does not exist";
+    } else if (xmlr.status == 500) {
+      document.getElementById("other-user-text-wall").innerHTML =
+        "An unexpected error occurred.Please try again.";
     }
   };
   xmlr.send();
