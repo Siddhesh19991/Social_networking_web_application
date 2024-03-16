@@ -3,6 +3,11 @@
 This project is a social networking application featuring a welcome page and a profile page. The primary objective of this project was to implement different functionalities for both the Frontend and Backend using JavaScript and Python. Due to the emphasis on learning functionalities, less attention was given to CSS. A separate project was undertaken to focus on CSS for enhancing the visual appeal of the website. You can find the repository for the CSS-focused project [here](https://github.com/Siddhesh19991/Responsive_meal_delivery_website).
 
 
+<br>
+<br>
+<br>
+<br>
+
 
 Steps to view the app:
   1) Make sure the latest version of python is installed.
@@ -45,6 +50,12 @@ Here are some more information about the functionalities implemented in the proj
 7) The website is made responive so that the application is adaptable to different display resolutions from mobile to desktop using the "Bootstrap" framework.
    
 8) Geolocation was setup using the "Geocode.xyz" API, and the implmentation was done such that every message shall also include the user’s location who has posted it. (Note: Due to the limited number of free credits available for this API, once the limit has reached, the address will unfortunately be displayed as "undefiend" as the current auth key has reached its API limit) 
+
+
+<br>
+<br>
+<br>
+<br>
 
 
 Welcome View: 
