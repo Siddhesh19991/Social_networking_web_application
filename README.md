@@ -4,7 +4,7 @@ This project is a social networking application featuring a welcome page and a p
 
 
 
-Command to view the app:
+Steps to view the app:
   1) Make sure the latest version of python is installed.
      
   2) Create a virtual environment by running:
@@ -22,7 +22,10 @@ Command to view the app:
 
 
 
-
+<br>
+<br>
+<br>
+<br>
 
 
 Here are some more information about the functionalities implemented in the project: 
