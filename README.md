@@ -12,7 +12,7 @@ This project is a social networking application featuring a welcome page and a p
 Steps to view the app:
   1) Make sure the latest version of python is installed.
      
-  2) Create a virtual environment by running:
+  2) Create a virtual environment by running: <br>
        virtualenv -p python3 specified_directory
 
      This is done to to create and use a separate and isolated virtual machine for the application.
