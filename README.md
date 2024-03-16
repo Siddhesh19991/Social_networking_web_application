@@ -62,7 +62,11 @@ Welcome View:
 <img width="1244" alt="Screenshot 2024-03-16 at 3 15 02 PM" src="https://github.com/Siddhesh19991/Social_networking_web_application/assets/65071692/7bc3be52-703b-4044-a5e4-76319f5f990d">
 
 
-Profile View: 
+<br>
+<br>
+
+Profile View: <be>
+
 This profile page has diffeernt tabs within it for the user to use as shwon below
 
 In the "Home tab", the user shall own a message wall which other users and himself/herself can post messages on it.
