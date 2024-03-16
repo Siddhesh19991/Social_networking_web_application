@@ -22,7 +22,7 @@ Steps to view the app:
     
   4) Ensure relevant libraries are installed as indicated in lines 1-7 in the server.py file. (Use pip3 install ____ )
      
-  5) Now run the below command for the app to run: 
+  5) Now run the below command for the app to run: <br>
       gunicorn -b 0.0.0.0:5000 --workers 1 --threads 100 server:app
 
 
