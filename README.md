@@ -17,8 +17,8 @@ Steps to view the app:
 
      This is done to to create and use a separate and isolated virtual machine for the application.
      
-  3)Run the below commmand:
-    source path_to_virtual_environment/bin/activate
+  3)Run the below command:<br>
+      source path_to_virtual_environment/bin/activate
     
   4) Ensure relevant libraries are installed as indicated in lines 1-7 in the server.py file. (Use pip3 install ____ )
      
