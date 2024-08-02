@@ -1,6 +1,6 @@
 # Social_networking_web_application
 
-This project is a social networking application featuring a welcome page and a profile page. The primary objective of this project was to implement different functionalities for both the Frontend and Backend using JavaScript and Python. Due to the emphasis on learning functionalities, less attention was given to CSS. A separate project was undertaken to focus on CSS to enhance the visual appeal of the website. You can find the repository for that project [here](https://github.com/Siddhesh19991/Responsive_meal_delivery_website).
+This project is a social networking application featuring a welcome page and a profile page. The primary objective of this project was to implement different functionalities for both the Frontend and Backend using JavaScript, SQLite and Python. Due to the emphasis on learning functionalities, less attention was given to CSS. A separate project was undertaken to focus on CSS to enhance the visual appeal of the website. You can find the repository for that project [here](https://github.com/Siddhesh19991/Responsive_meal_delivery_website).
 
 
 <br>
