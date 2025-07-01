@@ -5,8 +5,6 @@ This project is a social networking application featuring a welcome page and a p
 
 <br>
 <br>
-<br>
-<br>
 
 
 Steps to view the app:
